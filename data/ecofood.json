@@ -1,0 +1,151 @@
+{
+  "reports": [
+    {
+      "id": "EF-2042",
+      "org": "Coffee Point",
+      "owner": "operator@atu.kz",
+      "date": "2026-11-07",
+      "type": "Coffee grounds",
+      "kg": 12,
+      "status": "submitted",
+      "reason": "prep",
+      "price": 1800,
+      "source": "Coffee bar",
+      "notes": "Morning shift",
+      "photo": "",
+      "createdAt": "2026-11-07T08:30:00.000Z",
+      "updatedAt": "2026-11-07T08:30:00.000Z"
+    },
+    {
+      "id": "EF-2041",
+      "org": "Main Canteen",
+      "owner": "operator@atu.kz",
+      "date": "2026-11-06",
+      "type": "Mixed food",
+      "kg": 48,
+      "status": "review",
+      "reason": "over",
+      "price": 1500,
+      "source": "Preparation zone",
+      "notes": "Lunch service",
+      "photo": "",
+      "createdAt": "2026-11-06T09:15:00.000Z",
+      "updatedAt": "2026-11-06T09:15:00.000Z"
+    },
+    {
+      "id": "EF-2040",
+      "org": "Main Canteen",
+      "owner": "operator@atu.kz",
+      "date": "2026-11-05",
+      "type": "Bakery",
+      "kg": 22,
+      "status": "approved",
+      "reason": "portion",
+      "price": 950,
+      "source": "Serving line",
+      "notes": "",
+      "photo": "",
+      "createdAt": "2026-11-05T10:20:00.000Z",
+      "updatedAt": "2026-11-05T12:05:00.000Z"
+    },
+    {
+      "id": "EF-2039",
+      "org": "Main Canteen",
+      "owner": "operator@atu.kz",
+      "date": "2026-11-05",
+      "type": "Vegetables",
+      "kg": 31,
+      "status": "returned",
+      "reason": "prep",
+      "price": 1250,
+      "source": "Preparation zone",
+      "notes": "Фотоны анық түсіріңіз",
+      "photo": "",
+      "createdAt": "2026-11-05T08:10:00.000Z",
+      "updatedAt": "2026-11-05T11:30:00.000Z"
+    },
+    {
+      "id": "EF-2038",
+      "org": "Main Canteen",
+      "owner": "operator@atu.kz",
+      "date": "2026-11-04",
+      "type": "Mixed food",
+      "kg": 39,
+      "status": "approved",
+      "reason": "over",
+      "price": 1600,
+      "source": "Plate waste station",
+      "notes": "",
+      "photo": "",
+      "createdAt": "2026-11-04T09:00:00.000Z",
+      "updatedAt": "2026-11-04T13:00:00.000Z"
+    }
+  ],
+  "events": [
+    {
+      "id": "EV-0",
+      "reportId": "EF-2042",
+      "action": "submitted",
+      "actor": "operator@atu.kz",
+      "comment": "",
+      "time": "2026-11-07T08:30:00.000Z"
+    },
+    {
+      "id": "EV-1",
+      "reportId": "EF-2039",
+      "action": "returned",
+      "actor": "reviewer@atu.kz",
+      "comment": "Фотоны анық түсіріңіз",
+      "time": "2026-11-05T11:30:00.000Z"
+    },
+    {
+      "id": "EV-2",
+      "reportId": "EF-2040",
+      "action": "approved",
+      "actor": "reviewer@atu.kz",
+      "comment": "",
+      "time": "2026-11-05T12:05:00.000Z"
+    }
+  ],
+  "goals": [
+    {
+      "id": "GOAL-1",
+      "org": "Main Canteen",
+      "baseline": 10,
+      "current": 8.8,
+      "target": 2,
+      "updatedAt": "2026-11-07T14:42:45.412Z"
+    },
+    {
+      "id": "GOAL-1794062564850",
+      "org": "Coffee Point",
+      "baseline": 5,
+      "current": 3.8,
+      "target": 2,
+      "updatedAt": "2026-11-07T14:42:44.850Z"
+    }
+  ],
+  "notifications": [],
+  "locations": [
+    {
+      "id": "CP-01",
+      "org": "Coffee Point",
+      "name": "Coffee bar"
+    },
+    {
+      "id": "MC-01",
+      "org": "Main Canteen",
+      "name": "Preparation zone"
+    },
+    {
+      "id": "MC-02",
+      "org": "Main Canteen",
+      "name": "Serving line"
+    },
+    {
+      "id": "MC-03",
+      "org": "Main Canteen",
+      "name": "Plate waste station"
+    }
+  ]
+}
