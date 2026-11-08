@@ -13,7 +13,7 @@ const Q=()=>qc[state.lang];
 const photoLimitMessage=()=>state.lang==='kk'?'Фото көлемі 1,5 МБ-тан аспауы керек':state.lang==='ru'?'Размер фото не должен превышать 1,5 МБ':'Photo must be no larger than 1.5 MB';
 const originalStatusText=statusText;
 statusText=function(value){return value==='submitted'?P().submitted:originalStatusText(value)};
-async function api(path,options={}){const response=await fetch(path,{credentials:'same-origin',headers:{'content-type':'application/json',...(options.headers||{})},...options});const payload=await response.json().catch(()=>({}));if(!response.ok){const error=new Error(payload.error||'REQUEST_FAILED');error.status=response.status;throw error}return payload}
+async function api(path,options={}){if(window.EcoFoodPages?.enabled)return window.EcoFoodPages.api(path,options);const response=await fetch(path,{credentials:'same-origin',headers:{'content-type':'application/json',...(options.headers||{})},...options});const payload=await response.json().catch(()=>({}));if(!response.ok){const error=new Error(payload.error||'REQUEST_FAILED');error.status=response.status;throw error}return payload}
 async function runBusy(button,action){const label=button.innerHTML;button.disabled=true;button.setAttribute('aria-busy','true');button.textContent=Q().loading;try{return await action()}finally{if(document.contains(button)){button.disabled=false;button.removeAttribute('aria-busy');button.innerHTML=label}}}
 function acceptServer(payload){platform.user=payload.user;platform.events=payload.events||[];platform.goals=payload.goals||[];platform.locations=payload.locations||[];platform.organizations=payload.organizations||[];platform.templates=payload.templates||[];platform.wasteTypes=payload.wasteTypes||[];platform.notifications=payload.notifications||[];state.role=payload.user?.role||state.role;state.reports=(payload.reports||[]).map(report=>({...report,kg:Number(report.kg),price:Number(report.price||0)}))}
 function formatDate(value){if(!value)return '—';const date=new Date(value.length===10?`${value}T00:00:00`:value);const day=String(date.getDate()).padStart(2,'0'),month=String(date.getMonth()+1).padStart(2,'0'),year=date.getFullYear();return state.lang==='en'?`${day}/${month}/${year}`:`${day}.${month}.${year}`}
@@ -51,7 +51,8 @@ function organizationsV2(){if(!['Reviewer','Administrator','Leadership'].include
 const baseLandingV2=landing;
 landing=function(){return baseLandingV2().replace(`<strong>3</strong>${campus().roles}`,`<strong>4</strong>${campus().roles}`)};
 const baseLogin=login;
-function serverDemoNote(){return state.lang==='kk'?'Демо аккаунттар сервердегі тұрақты деректермен жұмыс істейді.':state.lang==='ru'?'Демо-аккаунты работают с данными, сохранёнными на сервере.':'Demo accounts use data persisted on the server.'}
+function persistenceLabel(){if(!window.EcoFoodPages?.enabled)return P().server;return state.lang==='kk'?'Браузердегі демо':state.lang==='ru'?'Демо в браузере':'Browser demo'}
+function serverDemoNote(){if(window.EcoFoodPages?.enabled)return state.lang==='kk'?'GitHub Pages демосы: өзгерістер тек осы браузерде сақталады.':state.lang==='ru'?'Демо GitHub Pages: изменения сохраняются только в этом браузере.':'GitHub Pages demo: changes are stored only in this browser.';return state.lang==='kk'?'Демо аккаунттар сервердегі тұрақты деректермен жұмыс істейді.':state.lang==='ru'?'Демо-аккаунты работают с данными, сохранёнными на сервере.':'Demo accounts use data persisted on the server.'}
 login=function(){return baseLogin().replace(L().demoNote,serverDemoNote()).replace('</form>',`<div class="account-hints"><strong>${P().accounts}</strong><button type="button" data-demo-email="operator@atu.kz">${P().operator}</button><button type="button" data-demo-email="reviewer@atu.kz">${P().reviewer}</button><button type="button" data-demo-email="admin@atu.kz">${P().admin}</button><button type="button" data-demo-email="leadership@atu.kz">${P().leadership}</button><small>${P().passwordHint}</small></div></form>`)};
 navItems=function(){if(!platform.user)return '';const role=platform.user.role;const pages=role==='Operator'?['dashboard','forms','mobile','submissions','reports','analytics','impact']:role==='Reviewer'?['dashboard','submissions','organizations','reports','analytics','impact']:role==='Leadership'?['dashboard','organizations','reports','analytics','impact']:['dashboard','forms','mobile','submissions','organizations','reports','analytics','impact'];return pages.map(page=>`<button class="nav-item ${state.page===page?'active':''}" data-page="${page}"><span class="nav-icon">${icons[page]||'↘'}</span>${L()[page]||P()[page]||copy().title}</button>`).join('')}
 pageContent=function(){return ({dashboard:dashboardV2,forms:formV2,mobile:qrPage,submissions:submissionsV2,organizations:organizationsV2,reports:reportsV2,analytics:analyticsV2,impact:impactV2,notifications:notificationsV2,settings:settingsV2}[state.page]||dashboardV2)()}
@@ -62,7 +63,7 @@ function bindPlatform(){
   const loginForm=document.getElementById('loginForm');if(loginForm)loginForm.onsubmit=async event=>{event.preventDefault();if(!loginForm.reportValidity())return;try{const payload=await api('/api/login',{method:'POST',body:JSON.stringify({email:loginForm.email.value,password:loginForm.password.value})});acceptServer(payload);state.view='app';state.page='dashboard';render()}catch(error){toast(error.status===401?P().invalidLogin:P().serverError)}};
   document.querySelectorAll('[data-action="logout"]').forEach(button=>button.onclick=async()=>{await api('/api/logout',{method:'POST',body:'{}'}).catch(()=>{});platform.user=null;state.view='landing';render();toast(P().loggedOut)});
   document.querySelectorAll('.profile').forEach(profile=>{if(platform.user)profile.innerHTML=`<div class="avatar">${safe(platform.user.name.split(' ').map(item=>item[0]).join('').slice(0,2))}</div><div><strong>${safe(platform.user.name)}</strong><small>${roleLabel(platform.user.role)}</small></div>`});
-  document.querySelectorAll('.demo-chip').forEach(item=>item.textContent=P().server);
+  document.querySelectorAll('.demo-chip').forEach(item=>item.textContent=persistenceLabel());
   syncFilters();
   const orgSelect=document.getElementById('platformOrg');if(orgSelect)orgSelect.onchange=()=>{platform.formOrg=orgSelect.value;render()};
   const reportPeriod=document.getElementById('reportPeriod');if(reportPeriod)reportPeriod.onchange=()=>{platform.reportPeriod=reportPeriod.value;render()};
@@ -87,4 +88,9 @@ function bindPlatform(){
 }
 const priorRender=render;
 render=function(){priorRender();bindPlatform()};
+if(window.EcoFoodPages?.enabled){
+  Object.assign(pc.kk,{server:'Браузердегі демо',online:'Браузер демосы'});
+  Object.assign(pc.ru,{server:'Демо в браузере',online:'Демо в браузере'});
+  Object.assign(pc.en,{server:'Browser demo',online:'Browser demo'});
+}
 api('/api/state').then(payload=>{acceptServer(payload);state.view='app';render()}).catch(()=>render());
