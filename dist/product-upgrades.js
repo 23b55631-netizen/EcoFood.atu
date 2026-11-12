@@ -1,5 +1,5 @@
 (function(){
-  Object.assign(t.kk,{settingsSub:'Тіл, профиль және кіру ақпараты'});Object.assign(t.ru,{settingsSub:'Язык, профиль и сведения о доступе'});Object.assign(t.en,{settingsSub:'Language, profile and access information'});
+  Object.assign(t.kk,{settingsSub:'Тіл, профиль және кіру ақпараты',forms:'Есепті енгізу',formSub:'Қалдықтарды есепке алу формасы'});Object.assign(t.ru,{settingsSub:'Язык, профиль и сведения о доступе',forms:'Ввод отчёта',formSub:'Форма учёта отходов'});Object.assign(t.en,{settingsSub:'Language, profile and access information',forms:'Report entry',formSub:'Waste-recording form'});
   Object.assign(catalog,{
     'Main Canteen':['Негізгі асхана','Главная столовая','Main Canteen'],
     'Coffee Point':['Кофехана','Кофейня','Coffee Point'],
