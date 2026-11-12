@@ -25,5 +25,5 @@ test('demo account label and published asset versions are current',()=>{
   assert.match(index,/catalog-data\.js\?v=1/);
   assert.match(index,/pages-adapter\.js\?v=12/);
   assert.match(index,/platform\.js\?v=21/);
-  assert.match(index,/product-upgrades\.js\?v=21/);
+  assert.match(index,/product-upgrades\.js\?v=22/);
 });

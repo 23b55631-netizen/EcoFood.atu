@@ -4,6 +4,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 
 const upgrades=fs.readFileSync(path.join(__dirname,'..','dist','product-upgrades.js'),'utf8');
+const css=fs.readFileSync(path.join(__dirname,'..','dist','platform.css'),'utf8');
 
 test('operator QR screen is camera-first and hides QR catalogue',()=>{
   assert.match(upgrades,/role==='Operator'\)return `\$\{intro\(L\(\)\.mobile,U\(\)\.scanNow\)\}\$\{scanner\}`/);
@@ -33,4 +34,11 @@ test('QR camera can recover from denied access and avoids duplicate scans',()=>{
   assert.match(upgrades,/qrLastValue/);
   assert.match(upgrades,/navigator\.vibrate/);
   assert.match(upgrades,/visibilitychange/);
+});
+
+test('Telegram helper remains accessible without covering mobile navigation',()=>{
+  assert.match(upgrades,/https:\/\/t\.me\/EcoFood_HelpBot/);
+  assert.match(upgrades,/telegramHelp/);
+  assert.match(css,/\.telegram-help/);
+  assert.match(css,/bottom:calc\(76px \+ env\(safe-area-inset-bottom\)\)/);
 });

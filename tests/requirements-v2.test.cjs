@@ -4,6 +4,7 @@ const fs=require('node:fs');
 
 const server=fs.readFileSync('server.mjs','utf8');
 const ui=fs.readFileSync('dist/requirements-v2.js','utf8');
+const platform=fs.readFileSync('dist/platform.js','utf8');
 const data=JSON.parse(fs.readFileSync('data/ecofood.json','utf8'));
 
 test('official five organizations and templates are seeded',()=>{
@@ -44,4 +45,9 @@ test('quarter comparison and official methodology links are visible',()=>{
   assert.match(ui,/epa\.gov/);
   assert.match(ui,/fao\.org/);
   assert.match(ui,/sdgs\.un\.org\/goals\/goal12/);
+});
+
+test('the consolidated registry contains approved reports only',()=>{
+  assert.match(platform,/return match&&item\.status==='approved'/);
+  assert.doesNotMatch(platform,/id="acceptedOnly"/);
 });
