@@ -56,6 +56,10 @@ test('four-role workflow works end-to-end',async()=>{
   assert.equal(report.entries.length,2);
   assert.equal(report.kg,4.5);
   assert.equal(report.liters,2);
+  assert.ok(report.submittedAt);
+  assert.equal(report.decidedAt,'');
+  assert.equal(report.entries[0].responsible,'user@atu.kz');
+  assert.ok(report.entries[0].createdAt);
 
   const duplicate=await request('/api/reports',user.cookie,'POST',batch);
   assert.equal(duplicate.status,409);
@@ -63,13 +67,19 @@ test('four-role workflow works end-to-end',async()=>{
   const reviewer=await login('reviewer@atu.kz');
   const started=await request(`/api/reports/${report.id}`,reviewer.cookie,'PATCH',{action:'startReview'});
   assert.equal(started.status,200);
-  const startedReport=(await started.json()).reports.find(item=>item.id===report.id);
+  const startedState=await started.json(),startedReport=startedState.reports.find(item=>item.id===report.id);
   assert.equal(startedReport.status,'review');
   assert.equal(startedReport.reviewer,'reviewer@atu.kz');
+  assert.equal(startedState.events.find(item=>item.reportId===report.id&&item.action==='review').fromStatus,'submitted');
 
   const approved=await request(`/api/reports/${report.id}`,reviewer.cookie,'PATCH',{action:'approve',comment:'OK'});
   assert.equal(approved.status,200);
-  assert.equal((await approved.json()).reports.find(item=>item.id===report.id).status,'approved');
+  const approvedState=await approved.json(),approvedReport=approvedState.reports.find(item=>item.id===report.id);
+  assert.equal(approvedReport.status,'approved');
+  assert.ok(approvedReport.decidedAt);
+  const approvedEvent=approvedState.events.find(item=>item.reportId===report.id&&item.action==='approved');
+  assert.equal(approvedEvent.fromStatus,'review');
+  assert.equal(approvedEvent.toStatus,'approved');
 
   const admin=await login('admin@atu.kz');
   const managed=await request('/api/organizations',admin.cookie,'POST',{id:'NEW',name:'New Unit',kind:'Department',template:'TPP_FORM',deadlineDay:8,responsible:'new@atu.kz',active:true});

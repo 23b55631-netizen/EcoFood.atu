@@ -38,19 +38,66 @@ erDiagram
   REPORT ||--|{ ENTRY : contains
   REPORT ||--o{ EVENT : records
   ENTRY }o--|| WASTE_TYPE : classifies
+  WASTE_TYPE }o--|| DISPOSAL_METHOD : recommends
 
+  ORGANIZATION {
+    string id
+    string name
+    string kind
+    string building
+    string address
+    boolean active
+  }
+  USER {
+    string id
+    string name
+    string email
+    string role
+    string organization
+  }
+  WASTE_TYPE {
+    string id
+    string name
+    string unit
+    string disposalDefault
+    boolean recyclable
+    number co2Saving
+  }
+  DISPOSAL_METHOD {
+    string code
+    string name
+    number co2Factor
+  }
   REPORT {
+    string id
+    string organization
     string period
     string status
+    string submittedAt
+    string reviewer
+    string decidedAt
     number kg
     number liters
   }
   ENTRY {
+    string id
     date date
     string type
     number quantity
     string unit
     string disposal
+    string responsible
+    string photo
+    string createdAt
+  }
+  EVENT {
+    string id
+    string reportId
+    string fromStatus
+    string toStatus
+    string actor
+    string comment
+    string time
   }
 ```
 
