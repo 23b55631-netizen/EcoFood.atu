@@ -68,6 +68,8 @@
   platform.quickMode=platform.quickMode!==false;
   const qrNavIcon=svgIcon('M4 4h6v6H4V4Zm2 2v2h2V6H6Zm8-2h6v6h-6V4Zm2 2v2h2V6h-2ZM4 14h6v6H4v-6Zm2 2v2h2v-2H6Zm8-2h2v2h-2v-2Zm4 0h2v4h-2v-4Zm-4 4h4v2h-4v-2Z');
   const telegramIcon=svgIcon('M21.5 3.5 2.8 10.7c-1.3.5-1.3 1.3-.2 1.6l4.8 1.5 1.9 5.8c.2.6.1.8.7.8.4 0 .6-.2.8-.4l2.3-2.2 4.8 3.5c.9.5 1.5.3 1.7-.8l3.2-15.2c.3-1.3-.5-1.9-1.3-1.6Zm-11 10-1 3.7-1.1-3.4 10.9-6.9-8.8 6.6Z');
+  const baseTrendSvg=trendSvg;
+  trendSvg=function(reports){return baseTrendSvg(reports).replace('<svg ','<svg class="eco-trend" ').replace('<polygon ','<polygon class="chart-area" ').replace('<polyline ','<polyline class="chart-line" ')};
   icons.mobile=qrNavIcon;
   function submissionLabel(){return platform.user?.role==='Operator'?U().mySubmissions:platform.user?.role==='Reviewer'?U().reviewSubmissions:U().allSubmissions}
   function mobileLabel(page){if(page==='forms')return U().newEntry;if(page==='submissions')return platform.user?.role==='Operator'?U().mySubmissions:L().submissions;return L()[page]||P()[page]||page}
