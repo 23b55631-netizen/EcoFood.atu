@@ -1,139 +1,152 @@
 import http from 'node:http';
-import { readFile, writeFile, mkdir, stat } from 'node:fs/promises';
-import { createReadStream } from 'node:fs';
-import { dirname, extname, join, normalize, resolve, sep } from 'node:path';
-import { randomBytes, timingSafeEqual } from 'node:crypto';
+import {readFile,writeFile,mkdir,stat} from 'node:fs/promises';
+import {createReadStream} from 'node:fs';
+import {dirname,extname,join,normalize,resolve,sep} from 'node:path';
+import {randomBytes,timingSafeEqual,scryptSync} from 'node:crypto';
 
-const root=resolve(import.meta.dirname);
-const publicRoot=join(root,'dist');
-const dataRoot=join(root,'data');
+const root=resolve(import.meta.dirname),publicRoot=join(root,'dist'),dataRoot=join(root,'data');
 const databasePath=resolve(process.env.ECOFOOD_DATA_PATH||join(dataRoot,'ecofood.json'));
-const port=Number(process.env.ECOFOOD_PORT||4174);
-const sessions=new Map();
+const port=Number(process.env.ECOFOOD_PORT||4174),sessions=new Map(),schemaVersion=5;
+const ORG={TPP:'ТПП кафедрасы',TX:'ТХиПП кафедрасы',INN:'ATU INN оқу-қонақ үй кешені',CAFE:'АТУ кофеханасы (ЖК «Canella»)',ISK:'1, 2-корпустар асхана кешені (ЖК «Искандер»)'};
+const demoHash='ecofood-atu-demo-2026:9b6aceb90de2e7d0fa66c43879a50c99569fefd17a8083f1873c02202991fad3cd8538865ce905bb0ed998763cc6034348e817b7db1d7f1c244053c03ee2f8ec';
 const users=[
-  {email:'operator@atu.kz',password:'demo2026',name:'Мадина О.',role:'Operator',org:'Main Canteen'},
-  {email:'reviewer@atu.kz',password:'demo2026',name:'Айдос Ә.',role:'Reviewer',org:'ATU'},
-  {email:'admin@atu.kz',password:'demo2026',name:'Әкімші',role:'Administrator',org:'ATU'},
-  {email:'leadership@atu.kz',password:'demo2026',name:'Басшылық',role:'Leadership',org:'ATU'}
+  {email:'user@atu.kz',passwordHash:demoHash,name:'Жауапты тұлға',role:'User',org:ORG.ISK},
+  {email:'reviewer@atu.kz',passwordHash:demoHash,name:'Тексеруші',role:'Reviewer',org:'ATU'},
+  {email:'admin@atu.kz',passwordHash:demoHash,name:'Әкімші',role:'Administrator',org:'ATU'},
+  {email:'leadership@atu.kz',passwordHash:demoHash,name:'Басшылық',role:'Leadership',org:'ATU'}
 ];
 const organizationRegistry=[
-  {id:'MC',name:'Main Canteen',kind:'Canteen',template:'DAILY_KITCHEN',deadlineDay:5,responsible:'operator@atu.kz'},
-  {id:'BC',name:'Building B Canteen',kind:'Canteen',template:'DAILY_KITCHEN',deadlineDay:5,responsible:'b-canteen@atu.kz'},
-  {id:'CP',name:'Coffee Point',kind:'Coffee shop',template:'COFFEE_POINT',deadlineDay:5,responsible:'coffee@atu.kz'},
-  {id:'INN',name:'ATU INN',kind:'Hotel',template:'HOSPITALITY',deadlineDay:7,responsible:'inn@atu.kz'},
-  {id:'FTD',name:'Food Technology Department',kind:'Department',template:'MONTHLY_UNIT',deadlineDay:7,responsible:'foodtech@atu.kz'},
-  {id:'D1',name:'Dormitory #1',kind:'Dormitory',template:'MONTHLY_UNIT',deadlineDay:7,responsible:'dorm1@atu.kz'},
-  {id:'TR',name:'Training Restaurant',kind:'Restaurant',template:'DAILY_KITCHEN',deadlineDay:5,responsible:'restaurant@atu.kz'}
+  {id:'TPP',name:ORG.TPP,kind:'Оқу зертханасы',building:'Б корпусы',address:'Фуркат к-сі, 348/4',template:'TPP_FORM',deadlineDay:7,responsible:'tpp@atu.kz',active:true},
+  {id:'TXPP',name:ORG.TX,kind:'Оқу зертханасы',building:'Б корпусы',address:'Фуркат к-сі, 348/4',template:'TXPP_FORM',deadlineDay:7,responsible:'txpp@atu.kz',active:true},
+  {id:'INN',name:ORG.INN,kind:'Қоғамдық тамақтану',building:'ATU INN',address:'АТУ кампусы',template:'INN_FORM',deadlineDay:7,responsible:'inn@atu.kz',active:true},
+  {id:'CAFE',name:ORG.CAFE,kind:'Кофехана',building:'АТУ кампусы',address:'Фуркат к-сі, 348/4',template:'CAFE_FORM',deadlineDay:5,responsible:'canella@atu.kz',active:true},
+  {id:'ISK',name:ORG.ISK,kind:'Асхана',building:'1 және 2 корпус',address:'Фуркат к-сі, 348/4',template:'ISK_FORM',deadlineDay:5,responsible:'user@atu.kz',active:true}
+];
+const METHODS={DONATE:'Сатылмаған өнімді беру',FEED:'Жануарларға жемге беру',RECYCLE:'Қайта өңдеуге тапсыру',OIL:'Пайдаланылған майды арнайы ұйымға тапсыру',AD:'Анаэробты ашыту (биогаз)',COMPOST:'Компосттау',TBO:'ҚТҚ полигонына шығару'};
+const disposalCatalog=[
+  {code:'DONATE',name:METHODS.DONATE,labels:{kk:'Сатылмаған өнімді беру (фудшеринг, қайырымдылық)',ru:'Передача нереализованной продукции (фудшеринг, благотворительность)',en:'Donate unsold products (food sharing, charity)'},forWaste:{kk:'Сатылмаған өнім қалдықтары',ru:'Остатки нереализованной продукции',en:'Unsold food products'},co2Factor:0,hierarchy:1,note:{kk:'Қалдық пайда болмайды. Тек қауіпсіз және жарамдылық мерзімі өтпеген өнім.',ru:'Отход не возникает. Только безопасная продукция с неистёкшим сроком годности',en:'No waste is generated. Only safe products within their shelf life.'}},
+  {code:'FEED',name:METHODS.FEED,labels:{kk:'Жануарларға жемге беру',ru:'Передача на корм животным',en:'Use as animal feed'},forWaste:{kk:'Көкөніс қабықтары, нан, жеміс қалдықтары',ru:'Очистки овощей, хлеб, отходы фруктов',en:'Vegetable peelings, bread and fruit waste'},co2Factor:null,hierarchy:2,note:{kk:'DEFRA коэффициенті жоқ. Шарт және ветеринариялық-санитариялық талаптар қажет.',ru:'Нет коэффициента DEFRA. Нужны договор и соблюдение ветеринарно-санитарных требований',en:'No DEFRA factor. A contract and veterinary and sanitary compliance are required.'}},
+  {code:'RECYCLE',name:METHODS.RECYCLE,labels:{kk:'Қайталама шикізатты қайта өңдеуге тапсыру',ru:'Сдача вторсырья на переработку',en:'Send recyclables for recycling'},forWaste:{kk:'Картон, ПЭТ, шыны, алюминий',ru:'Картон, ПЭТ, стекло, алюминий',en:'Cardboard, PET, glass and aluminium'},co2Factor:6.41,hierarchy:3,note:{kk:'Тек тасымалдау және қайта өңдеу (DEFRA әдістемесі).',ru:'Только транспорт и переработка (методика DEFRA)',en:'Transport and recycling only (DEFRA method).'}},
+  {code:'OIL',name:METHODS.OIL,labels:{kk:'Пайдаланылған майды арнайы ұйымға тапсыру',ru:'Сдача отработанного масла спецорганизации',en:'Send used oil to a specialist operator'},forWaste:{kk:'Пайдаланылған фритюр майы',ru:'Отработанное фритюрное масло',en:'Used frying oil'},co2Factor:6.41,hierarchy:3,note:{kk:'Қайта өңдеуге тең деп қабылданған. Май биодизельге жіберіледі.',ru:'Допущение: как переработка. Масло идёт на биодизель',en:'Assumed equivalent to recycling. Oil is used for biodiesel.'}},
+  {code:'AD',name:METHODS.AD,labels:{kk:'Анаэробты ашыту (биогаз)',ru:'Анаэробное сбраживание (биогаз)',en:'Anaerobic digestion (biogas)'},forWaste:{kk:'Барлық органикалық қалдық, оның ішінде ет пен сүйек',ru:'Все органические, включая мясо и кости',en:'All organics, including meat and bones'},co2Factor:8.88,hierarchy:4,note:{kk:'DEFRA 2024: тамақ қалдықтарын анаэробты ашыту.',ru:'DEFRA 2024: пищевые отходы, анаэробное сбраживание',en:'DEFRA 2024: food waste, anaerobic digestion.'}},
+  {code:'COMPOST',name:METHODS.COMPOST,labels:{kk:'Компосттау',ru:'Компостирование',en:'Composting'},forWaste:{kk:'Көкөніс, жеміс, қабық, кофе сығындысы, нан',ru:'Овощи, фрукты, скорлупа, кофейный жмых, хлеб',en:'Vegetables, fruit, shells, coffee grounds and bread'},co2Factor:8.88,hierarchy:4,note:{kk:'DEFRA 2024: тамақ қалдықтарын компосттау.',ru:'DEFRA 2024: пищевые отходы, компостирование',en:'DEFRA 2024: food waste, composting.'}},
+  {code:'TBO',name:METHODS.TBO,labels:{kk:'ҚТҚ полигонына шығару (көму)',ru:'Вывоз ТБО на полигон (захоронение)',en:'Send municipal waste to landfill'},forWaste:{kk:'Барлық қалдық; үлгілердегі әдепкі тәсіл',ru:'Любые; сейчас способ по умолчанию в образцах',en:'Any waste; current default in sample forms'},co2Factor:null,hierarchy:5,note:{kk:'Коэффициент түрге байланысты: тамақ 700,21; картон 1 164,39; шыны 8,88.',ru:'Коэффициент зависит от вида: пищевые 700,21; картон 1 164,39; стекло 8,88',en:'Factor depends on type: food 700.21; cardboard 1,164.39; glass 8.88.'}}
 ];
 const wasteTypes=[
-  {id:'mixed',name:'Mixed food',recyclable:false,co2:2.5},
-  {id:'bakery',name:'Bakery',recyclable:true,co2:2.1},
-  {id:'vegetables',name:'Vegetables',recyclable:true,co2:1.8},
-  {id:'dairy',name:'Dairy',recyclable:false,co2:3.2},
-  {id:'meat',name:'Meat & fish',recyclable:false,co2:5.6},
-  {id:'oil',name:'Cooking oil',recyclable:true,co2:3.0},
-  {id:'coffee',name:'Coffee grounds',recyclable:true,co2:1.5},
-  {id:'packaging',name:'Packaging',recyclable:true,co2:0.9}
-];
-const formTemplates=[
-  {id:'DAILY_KITCHEN',name:'Daily kitchen form',frequency:'daily',types:['Mixed food','Bakery','Vegetables','Dairy','Meat & fish','Cooking oil']},
-  {id:'COFFEE_POINT',name:'Coffee point form',frequency:'daily',types:['Bakery','Dairy','Coffee grounds','Packaging']},
-  {id:'HOSPITALITY',name:'Hospitality form',frequency:'monthly',types:['Mixed food','Bakery','Vegetables','Dairy','Packaging']},
-  {id:'MONTHLY_UNIT',name:'Monthly unit form',frequency:'monthly',types:['Mixed food','Bakery','Vegetables','Coffee grounds','Packaging']}
-];
-const now=()=>new Date().toISOString();
-const seed={
-  reports:[
-    {id:'EF-2042',org:'Coffee Point',owner:'operator@atu.kz',date:'2026-11-07',type:'Coffee grounds',kg:12,status:'submitted',reason:'prep',price:1800,source:'Coffee bar',notes:'Morning shift',photo:'',createdAt:'2026-11-07T08:30:00.000Z',updatedAt:'2026-11-07T08:30:00.000Z'},
-    {id:'EF-2041',org:'Main Canteen',owner:'operator@atu.kz',date:'2026-11-06',type:'Mixed food',kg:48,status:'review',reason:'over',price:1500,source:'Preparation zone',notes:'Lunch service',photo:'',createdAt:'2026-11-06T09:15:00.000Z',updatedAt:'2026-11-06T09:15:00.000Z'},
-    {id:'EF-2040',org:'Main Canteen',owner:'operator@atu.kz',date:'2026-11-05',type:'Bakery',kg:22,status:'approved',reason:'portion',price:950,source:'Serving line',notes:'',photo:'',createdAt:'2026-11-05T10:20:00.000Z',updatedAt:'2026-11-05T12:05:00.000Z'},
-    {id:'EF-2039',org:'Main Canteen',owner:'operator@atu.kz',date:'2026-11-05',type:'Vegetables',kg:31,status:'returned',reason:'prep',price:1250,source:'Preparation zone',notes:'Фотоны анық түсіріңіз',photo:'',createdAt:'2026-11-05T08:10:00.000Z',updatedAt:'2026-11-05T11:30:00.000Z'},
-    {id:'EF-2038',org:'Main Canteen',owner:'operator@atu.kz',date:'2026-11-04',type:'Mixed food',kg:39,status:'approved',reason:'over',price:1600,source:'Plate waste station',notes:'',photo:'',createdAt:'2026-11-04T09:00:00.000Z',updatedAt:'2026-11-04T13:00:00.000Z'}
-  ],
-  events:[
-    {id:'EV-0',reportId:'EF-2042',action:'submitted',actor:'operator@atu.kz',comment:'',time:'2026-11-07T08:30:00.000Z'},
-    {id:'EV-1',reportId:'EF-2039',action:'returned',actor:'reviewer@atu.kz',comment:'Фотоны анық түсіріңіз',time:'2026-11-05T11:30:00.000Z'},
-    {id:'EV-2',reportId:'EF-2040',action:'approved',actor:'reviewer@atu.kz',comment:'',time:'2026-11-05T12:05:00.000Z'}
-  ],
-  goals:[{id:'GOAL-1',org:'Main Canteen',baseline:10,current:8.8,target:15,updatedAt:'2026-11-06T08:00:00.000Z'}],
-  notifications:[],
-  locations:[
-    {id:'CP-01',org:'Coffee Point',name:'Coffee bar'},
-    {id:'MC-01',org:'Main Canteen',name:'Preparation zone'},
-    {id:'MC-02',org:'Main Canteen',name:'Serving line'},
-    {id:'MC-03',org:'Main Canteen',name:'Plate waste station'}
-  ]
+  ['plate-waste','Залдан шыққан тағам қалдықтары',['Пищевые отходы из зала','Food waste from dining hall'],'Органикалық','kg','yes',METHODS.AD,700.21,8.88,691.33,'Тұтынудан кейінгі тамақ қалдықтары'],
+  ['unsold','Сатылмаған өнім қалдықтары',['Остатки нереализованной продукции','Unsold food products'],'Органикалық','kg','yes',METHODS.DONATE,700.21,8.88,691.33,'Алдымен алдын алу: жарамды өнімді уақытында беру'],
+  ['food-waste','Тамақ қалдықтары',['Остатки еды','Food leftovers'],'Органикалық','kg','yes',METHODS.AD,700.21,8.88,691.33,''],
+  ['vegetable-peels','Көкөніс қабықтары',['Очистки овощей','Vegetable peelings'],'Органикалық','kg','yes',METHODS.COMPOST,700.21,8.88,691.33,'Шикізатты бастапқы өңдеу қалдығы'],
+  ['fruit-veg','Жеміс-көкөніс қалдықтары',['Отходы фруктов и овощей','Fruit and vegetable waste'],'Органикалық','kg','yes',METHODS.COMPOST,700.21,8.88,691.33,''],
+  ['meat-trimmings','Ет өнімдерінің кесінділері',['Обрезки мясопродуктов','Meat trimmings'],'Органикалық','kg','partial',METHODS.AD,700.21,8.88,691.33,'Кәдімгі компост етті қабылдамайды'],
+  ['meat-bones','Ет сүйектері',['Мясные кости','Meat bones'],'Органикалық','kg','partial',METHODS.AD,700.21,8.88,691.33,'Кәдімгі компост сүйекті қабылдамайды'],
+  ['fish-bones','Балық сүйектері',['Рыбные кости','Fish bones'],'Органикалық','kg','partial',METHODS.AD,700.21,8.88,691.33,'Кәдімгі компост сүйекті қабылдамайды'],
+  ['egg-shells','Жұмыртқа қабығы',['Яичная скорлупа','Eggshells'],'Органикалық','kg','yes',METHODS.COMPOST,700.21,8.88,691.33,''],
+  ['coffee-grounds','Кофе сығындысы',['Кофейный жмых','Coffee grounds'],'Органикалық','kg','yes',METHODS.COMPOST,700.21,8.88,691.33,'Жақсы компостталады'],
+  ['bakery-samples','Нан-тоқаш өнімдері үлгілерінің қалдықтары',['Отходы образцов хлебобулочных изделий','Bakery sample waste'],'Органикалық','kg','yes',METHODS.AD,700.21,8.88,691.33,''],
+  ['confectionery-samples','Кондитерлік өнімдер үлгілерінің қалдықтары',['Отходы образцов кондитерских изделий','Confectionery sample waste'],'Органикалық','kg','yes',METHODS.AD,700.21,8.88,691.33,'Печенье, карамель'],
+  ['sucrose','Сахароза',['Сахароза','Sucrose'],'Органикалық','kg','yes',METHODS.AD,700.21,8.88,691.33,'Тамақ қалдығының коэффициенті қолданылған'],
+  ['used-oil','Пайдаланылған май',['Отработанное масло','Used cooking oil'],'Арнайы','l','yes',METHODS.OIL,700.21,6.41,693.8,'1 л ≈ 0,92 кг. Кәрізге төгуге болмайды'],
+  ['cardboard','Картон ыдыс',['Картонная тара','Cardboard packaging'],'Қайталама шикізат','kg','yes',METHODS.RECYCLE,1164.39,6.41,1157.98,'Құрғақ және таза картон'],
+  ['pet-bottle','ПЭТ-бөтелке 1,0 л',['ПЭТ-бутылка 1,0 л (растительное масло)','1.0 L PET bottle (vegetable oil)'],'Қайталама шикізат','kg','partial',METHODS.RECYCLE,8.88,6.41,2.47,'Шыны коэффициенттері қолданылған; май бөтелкесін барлық жерде қабылдамайды'],
+  ['glass-bottle','Шыны бөтелке',['Стеклобутылка','Glass bottle'],'Қайталама шикізат','kg','yes',METHODS.RECYCLE,8.88,6.41,2.47,''],
+  ['aluminium','Алюминий банкалар',['Алюминиевые банки','Aluminium cans'],'Қайталама шикізат','kg','yes',METHODS.RECYCLE,8.88,6.41,2.47,'Шыны коэффициенттері қолданылған'],
+  ['packaging','Орама қалдықтары',['Упаковочные отходы','Packaging waste'],'Аралас','kg','partial',METHODS.RECYCLE,1164.39,6.41,1157.98,'Картон және ПЭТ қайта өңдеуге, қалғаны ҚТҚ-ға; картон коэффициенті қолданылған']
+].map(([id,name,[ru,en],category,unit,recyclability,disposalDefault,co2Tbo,co2Recommended,co2Saving,note])=>({id,name,labels:{kk:name,ru,en},category,unit,recyclability,recyclable:recyclability==='yes',disposalDefault,co2Tbo,co2Recommended,co2Saving,co2:co2Saving/1000,note,active:true}));
+const wasteNoteLabels={
+  'plate-waste':['Объедки после потребления','Post-consumption plate waste'],
+  unsold:['Лучше предотвратить: передать, пока пригодно в пищу','Prevention is best: donate while still safe to eat'],
+  'vegetable-peels':['Отходы первичной обработки сырья','Waste from primary raw-material processing'],
+  'meat-trimmings':['В обычный компост мясо не принимают','Meat is not accepted in ordinary compost'],
+  'meat-bones':['В обычный компост кости не принимают','Bones are not accepted in ordinary compost'],
+  'fish-bones':['В обычный компост кости не принимают','Bones are not accepted in ordinary compost'],
+  'coffee-grounds':['Хорошо компостируется','Composts well'],
+  'confectionery-samples':['Печенье, карамель','Biscuits and caramel'],
+  sucrose:['Допущение: коэффициент как у пищевых отходов','Assumption: the food-waste factor is used'],
+  'used-oil':['Допущение: у DEFRA нет фактора для масла. 1 л ≈ 0,92 кг. В канализацию сливать нельзя','Assumption: DEFRA has no oil factor. 1 L ≈ 0.92 kg. Do not pour into drains'],
+  cardboard:['Сухой и чистый картон','Dry and clean cardboard'],
+  'pet-bottle':['Допущение: коэффициенты как у стекла. Бутылки из-под масла принимают не везде','Assumption: glass factors are used. Used oil bottles are not accepted everywhere'],
+  aluminium:['Допущение: коэффициенты как у стекла','Assumption: glass factors are used'],
+  packaging:['Допущение: считать как картон. Уточнить состав упаковки','Assumption: treated as cardboard. Confirm the packaging composition']
 };
+wasteTypes.forEach(item=>{const translated=wasteNoteLabels[item.id]||['',''];item.note={kk:item.note,ru:translated[0],en:translated[1]}});
+const formTemplates=[
+  {id:'TPP_FORM',name:'ТПП кафедрасының есебі',frequency:'monthly',types:['Орама қалдықтары','Ет сүйектері','Балық сүйектері']},
+  {id:'TXPP_FORM',name:'ТХиПП кафедрасының есебі',frequency:'monthly',types:['Жұмыртқа қабығы','Сахароза','ПЭТ-бөтелке 1,0 л','Шыны бөтелке','Нан-тоқаш өнімдері үлгілерінің қалдықтары','Кондитерлік өнімдер үлгілерінің қалдықтары','Жеміс-көкөніс қалдықтары','Алюминий банкалар']},
+  {id:'INN_FORM',name:'ATU INN айлық есебі',frequency:'monthly',types:['Көкөніс қабықтары','Ет өнімдерінің кесінділері','Залдан шыққан тағам қалдықтары','Сатылмаған өнім қалдықтары','Пайдаланылған май','Картон ыдыс']},
+  {id:'CAFE_FORM',name:'Canella кофеханасының есебі',frequency:'monthly',types:['Кофе сығындысы','Картон ыдыс','Тамақ қалдықтары']},
+  {id:'ISK_FORM',name:'Искандер асханасының күндік және айлық есебі',frequency:'daily',types:['Көкөніс қабықтары','Ет өнімдерінің кесінділері','Залдан шыққан тағам қалдықтары','Сатылмаған өнім қалдықтары','Пайдаланылған май','Картон ыдыс']}
+];
+const locations=[
+  {id:'TPP-01',org:ORG.TPP,name:'Оқу зертханасы'},
+  {id:'TXPP-01',org:ORG.TX,name:'Оқу зертханасы'},
+  {id:'INN-01',org:ORG.INN,name:'Қонақ үй асханасы'},
+  {id:'CAFE-01',org:ORG.CAFE,name:'Кофе-бар'},
+  {id:'ISK-01',org:ORG.ISK,name:'1-корпус асханасы'},
+  {id:'ISK-02',org:ORG.ISK,name:'2-корпус асханасы'}
+];
+const disposalMethods=disposalCatalog.map(item=>item.name);
+const now=()=>new Date().toISOString(),clone=value=>structuredClone(value);
+const typeByName=name=>wasteTypes.find(item=>item.name===name);
+const legacyDisposal={
+  'ҚТҚ шығару':METHODS.TBO,'ҚТҚ шығару (қоқыс жәшігі)':METHODS.TBO,'Қайта өңдеу':METHODS.RECYCLE,
+  'Компост':METHODS.COMPOST,'Арнайы жинау':METHODS.OIL,'Артық тағамды беру':METHODS.DONATE
+};
+const normalizeDisposal=value=>legacyDisposal[value]||value;
+function hashPassword(value){const salt=randomBytes(16).toString('hex');return `${salt}:${scryptSync(String(value),salt,64).toString('hex')}`}
+function verifyPassword(value,stored=''){const [salt,expected]=String(stored).split(':');if(!salt||!expected)return false;const actual=scryptSync(String(value),salt,64);const target=Buffer.from(expected,'hex');return actual.length===target.length&&timingSafeEqual(actual,target)}
+function summarizeEntries(entries){const kg=entries.filter(item=>item.unit==='kg').reduce((sum,item)=>sum+item.quantity,0),liters=entries.filter(item=>item.unit==='l').reduce((sum,item)=>sum+item.quantity,0),types=[...new Set(entries.map(item=>item.type))],sources=[...new Set(entries.map(item=>item.source))];return{kg,liters,type:types.length===1?types[0]:'Бірнеше санат',source:sources.length===1?sources[0]:'Бірнеше орын',date:[...entries].map(item=>item.date).sort().at(-1)}}
+function makeDemoReports(){const samples=[
+  {id:'TPP',org:ORG.TPP,source:'Оқу зертханасы',types:['Орама қалдықтары','Ет сүйектері'],base:12},
+  {id:'TXPP',org:ORG.TX,source:'Оқу зертханасы',types:['Жұмыртқа қабығы','Жеміс-көкөніс қалдықтары'],base:15},
+  {id:'INN',org:ORG.INN,source:'Қонақ үй асханасы',types:['Көкөніс қабықтары','Сатылмаған өнім қалдықтары'],base:24},
+  {id:'CAFE',org:ORG.CAFE,source:'Кофе-бар',types:['Кофе сығындысы','Картон ыдыс'],base:10},
+  {id:'ISK',org:ORG.ISK,source:'1-корпус асханасы',types:['Залдан шыққан тағам қалдықтары','Пайдаланылған май'],base:32}
+],months=['2026-09','2026-10','2026-11'];return months.flatMap((month,monthIndex)=>samples.map((sample,index)=>{const entries=sample.types.map((type,entryIndex)=>{const meta=typeByName(type);return{id:`R-${monthIndex}-${index}-${entryIndex}`,date:`${month}-${String(10+entryIndex).padStart(2,'0')}`,type,quantity:Number((sample.base-monthIndex*1.5-entryIndex*2).toFixed(1)),unit:meta.unit,disposal:meta.disposalDefault,source:sample.source,reason:entryIndex?'portion':'over',price:entryIndex?700:1100,notes:'',photo:''}}),summary=summarizeEntries(entries);return{id:`EF-${3000+monthIndex*5+index}`,org:sample.org,owner:sample.id==='ISK'?'user@atu.kz':`${sample.id.toLowerCase()}@atu.kz`,period:month,...summary,entries,status:'approved',reason:entries[0].reason,price:entries[0].price,notes:'3 айлық демо-деректер',photo:'',reviewer:'admin@atu.kz',versions:[],createdAt:`${month}-12T09:00:00.000Z`,updatedAt:`${month}-12T11:00:00.000Z`}}))}
+const demoReports=makeDemoReports();
+const seed={reports:demoReports,events:[],goals:[{id:'GOAL-1',org:ORG.ISK,baseline:100,current:88,target:15,updatedAt:'2026-11-06T08:00:00.000Z'}],notifications:[],members:users.map((user,index)=>({id:`U-${index+1}`,...user,active:true})),organizations:clone(organizationRegistry),templates:clone(formTemplates),wasteTypes:clone(wasteTypes),locations:clone(locations),disposalMethods:clone(disposalMethods),disposalCatalog:clone(disposalCatalog),schemaVersion,demoDatasetVersion:5};
 
-await mkdir(dirname(databasePath),{recursive:true});
-try{await stat(databasePath)}catch{await writeFile(databasePath,JSON.stringify(seed,null,2),'utf8')}
-async function loadDb(){return JSON.parse(await readFile(databasePath,'utf8'))}
+await mkdir(dirname(databasePath),{recursive:true});try{await stat(databasePath)}catch{await writeFile(databasePath,JSON.stringify(seed,null,2),'utf8')}
+function legacyEntry(report){const meta=typeByName(report.type)||{unit:'kg',disposalDefault:METHODS.TBO};return{id:`${report.id}-1`,date:report.date,type:report.type,quantity:Number(report.kg||0),unit:meta.unit,disposal:meta.disposalDefault,source:report.source,reason:report.reason||'unknown',price:Number(report.price||0),notes:report.notes||'',photo:report.photo||''}}
+async function loadDb(){const db=JSON.parse(await readFile(databasePath,'utf8'));if(db.schemaVersion!==schemaVersion){const oldDemo=/^EF-(20(38|39|40|41|42)|21\d\d|30(0\d|1[0-4]))$/;db.reports=(db.reports||[]).filter(report=>!oldDemo.test(report.id));db.reports.forEach(report=>{report.entries=(report.entries?.length?report.entries:[legacyEntry(report)]).map(entry=>({...entry,disposal:normalizeDisposal(entry.disposal)}));report.period=report.period||String(report.date).slice(0,7);Object.assign(report,summarizeEntries(report.entries))});db.reports.push(...clone(demoReports));db.schemaVersion=schemaVersion;db.demoDatasetVersion=5}db.organizations=Array.isArray(db.organizations)&&db.organizations.length?db.organizations:clone(organizationRegistry);db.templates=Array.isArray(db.templates)&&db.templates.length?db.templates:clone(formTemplates);db.locations=Array.isArray(db.locations)&&db.locations.length?db.locations:clone(locations);db.disposalMethods=clone(disposalMethods);db.disposalCatalog=clone(disposalCatalog);const customTypes=(db.wasteTypes||[]).filter(item=>String(item.id).startsWith('custom-')).map(item=>({...item,disposalDefault:normalizeDisposal(item.disposalDefault)}));db.wasteTypes=[...clone(wasteTypes),...customTypes];db.members=db.members||[];for(const demo of users){let member=db.members.find(item=>item.email===demo.email);if(!member){db.members.push({id:`U-${db.members.length+1}`,...demo,active:true});continue}member.org=demo.role==='User'?ORG.ISK:'ATU';member.role=demo.role;member.name=demo.name;if(member.password&&!member.passwordHash){member.passwordHash=hashPassword(member.password);delete member.password}if(!member.passwordHash)member.passwordHash=demo.passwordHash}db.reports=db.reports||[];db.events=db.events||[];db.notifications=db.notifications||[];db.goals=db.goals||[];db.reminderKeys=db.reminderKeys||[];await saveDb(db);return db}
 async function saveDb(db){await writeFile(databasePath,JSON.stringify(db,null,2),'utf8')}
 function json(response,status,payload,headers={}){response.writeHead(status,{'content-type':'application/json; charset=utf-8','cache-control':'no-store',...headers});response.end(JSON.stringify(payload))}
-function safeEqual(first,second){const a=Buffer.from(first);const b=Buffer.from(second);return a.length===b.length&&timingSafeEqual(a,b)}
-function cookies(request){return Object.fromEntries((request.headers.cookie||'').split(';').filter(Boolean).map(item=>{const [key,...value]=item.trim().split('=');return [key,decodeURIComponent(value.join('='))]}))}
-function currentUser(request){const token=cookies(request).ecofood_session;const email=token&&sessions.get(token);return users.find(user=>user.email===email)||null}
-async function body(request){let raw='';for await(const chunk of request){raw+=chunk;if(raw.length>3_000_000)throw new Error('Payload too large')}return raw?JSON.parse(raw):{}}
-function visibleState(db,user){
-  const reports=user.role==='Operator'?db.reports.filter(report=>report.owner===user.email):db.reports;
-  const reportIds=new Set(reports.map(report=>report.id));
-  return {user:{email:user.email,name:user.name,role:user.role,org:user.org},reports,events:db.events.filter(event=>reportIds.has(event.reportId)),goals:db.goals,locations:db.locations,organizations:organizationRegistry,templates:formTemplates,wasteTypes,notifications:db.notifications.filter(item=>!item.recipient||item.recipient===user.email||item.role===user.role)};
-}
-function canEdit(user,report){return user.role==='Administrator'||(user.role==='Operator'&&report.owner===user.email&&['draft','returned'].includes(report.status))}
+function cookies(request){return Object.fromEntries((request.headers.cookie||'').split(';').filter(Boolean).map(item=>{const [key,...value]=item.trim().split('=');return[key,decodeURIComponent(value.join('='))]}))}
+function accountFor(db,email){const member=db.members.find(item=>item.email.toLowerCase()===String(email||'').toLowerCase());return member?.active===false?null:(member||null)}
+function currentUser(request,db){const token=cookies(request).ecofood_session,email=token&&sessions.get(token);return email?accountFor(db,email):null}
+async function body(request){let raw='';for await(const chunk of request){raw+=chunk;if(raw.length>5_000_000)throw new Error('Payload too large')}return raw?JSON.parse(raw):{}}
+function visibleState(db,user){const reports=user.role==='User'?db.reports.filter(report=>report.org===user.org):db.reports,ids=new Set(reports.map(report=>report.id)),locations=user.role==='Administrator'?db.locations:db.locations.filter(location=>location.active!==false&&(user.role!=='User'||location.org===user.org));return{user:{email:user.email,name:user.name,role:user.role,org:user.org},reports,events:db.events.filter(event=>ids.has(event.reportId)),goals:db.goals,locations,organizations:db.organizations,templates:db.templates,wasteTypes:db.wasteTypes,disposalMethods:db.disposalMethods,disposalCatalog:db.disposalCatalog,members:db.members.map(({password,passwordHash,...member})=>member),notifications:db.notifications.filter(item=>!item.recipient||item.recipient===user.email||item.role===user.role)}}
+function validDate(date,period){return /^\d{4}-\d{2}-\d{2}$/.test(date)&&date<=new Date().toISOString().slice(0,10)&&date.startsWith(period)}
+function normalizeInput(db,input,user){const org=db.organizations.find(item=>item.name===input.org&&item.active!==false);if(!org||(user.role==='User'&&input.org!==user.org))return null;const period=String(input.period||input.date||'').slice(0,7),template=db.templates.find(item=>item.id===org.template),sources=db.locations.filter(item=>item.org===org.name&&item.active!==false).map(item=>item.name);const raw=Array.isArray(input.entries)&&input.entries.length?input.entries:[{date:input.date,type:input.type,quantity:input.kg,unit:'kg',disposal:METHODS.TBO,source:input.source,reason:input.reason,price:input.price,notes:input.notes,photo:input.photo}];if(!/^\d{4}-\d{2}$/.test(period)||!raw.length||raw.length>50)return null;const entries=raw.map((entry,index)=>{const meta=db.wasteTypes.find(item=>item.name===entry.type&&item.active!==false),quantity=Number(entry.quantity??entry.kg),price=Number(entry.price||0),unit=entry.unit||meta?.unit,disposal=normalizeDisposal(String(entry.disposal||meta?.disposalDefault||''));if(!meta||!template?.types.includes(entry.type)||!sources.includes(entry.source)||unit!==meta.unit||!db.disposalMethods.includes(disposal)||!validDate(String(entry.date),period)||!Number.isFinite(quantity)||quantity<=0||quantity>10000||!Number.isFinite(price)||price<0||price>10000000)throw new Error(`INVALID_ENTRY_${index}`);return{id:String(entry.id||`RE-${Date.now()}-${index}`).slice(0,60),date:String(entry.date),type:String(entry.type),quantity,unit,disposal,source:String(entry.source),reason:String(entry.reason||'unknown').slice(0,30),price,notes:String(entry.notes||'').slice(0,500),photo:String(entry.photo||'').slice(0,2_000_000)}});return{org:org.name,period,entries,...summarizeEntries(entries),reason:entries[0].reason,price:entries[0].price,notes:String(input.notes||'').slice(0,500),photo:String(input.photo||entries.find(item=>item.photo)?.photo||'').slice(0,2_000_000)}}
+function canEdit(user,report){return user.role==='Administrator'||(user.role==='User'&&report.org===user.org&&['draft','returned'].includes(report.status))}
+const canReview=user=>['Reviewer','Administrator'].includes(user.role);
 function addEvent(db,reportId,action,user,comment=''){db.events.unshift({id:`EV-${randomBytes(5).toString('hex')}`,reportId,action,actor:user.email,comment,time:now()})}
 function notify(db,{role,recipient,title,reportId}){db.notifications.unshift({id:`NT-${randomBytes(5).toString('hex')}`,role,recipient,title,reportId,time:now(),read:false})}
+function runReminderCycle(db,force=false){const today=new Date(),period=today.toISOString().slice(0,7);if(!force&&db.reminderRuns?.[period])return 0;db.reminderRuns=db.reminderRuns||{};const submitted=new Set(db.reports.filter(item=>item.period===period&&item.status!=='draft').map(item=>item.org));let created=0;db.organizations.filter(org=>org.active!==false&&(force||today.getUTCDate()>=org.deadlineDay)&&!submitted.has(org.name)).forEach(org=>{const key=`${period}:${org.id}`;if(!db.reminderKeys.includes(key)){db.reminderKeys.push(key);notify(db,{recipient:org.responsible,title:`Есеп мерзімі: ${org.name}`,reportId:''});created++}});db.reminderRuns[period]={time:now(),created};return created}
 
 async function api(request,response,url){
-  if(request.method==='POST'&&url.pathname==='/api/login'){
-    const input=await body(request);const user=users.find(item=>item.email.toLowerCase()===String(input.email||'').toLowerCase());
-    if(!user||!safeEqual(user.password,String(input.password||'')))return json(response,401,{error:'INVALID_CREDENTIALS'});
-    const token=randomBytes(32).toString('hex');sessions.set(token,user.email);const db=await loadDb();
-    return json(response,200,visibleState(db,user),{'set-cookie':`ecofood_session=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=28800`});
-  }
+  if(request.method==='POST'&&url.pathname==='/api/login'){const input=await body(request),db=await loadDb(),user=accountFor(db,input.email);if(!user||!verifyPassword(input.password,user.passwordHash))return json(response,401,{error:'INVALID_CREDENTIALS'});const token=randomBytes(32).toString('hex');sessions.set(token,user.email);return json(response,200,visibleState(db,user),{'set-cookie':`ecofood_session=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=28800`})}
   if(request.method==='POST'&&url.pathname==='/api/logout'){const token=cookies(request).ecofood_session;if(token)sessions.delete(token);return json(response,200,{ok:true},{'set-cookie':'ecofood_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0'})}
-  const user=currentUser(request);if(!user)return json(response,401,{error:'AUTH_REQUIRED'});
-  const db=await loadDb();
-  if(request.method==='GET'&&url.pathname==='/api/state')return json(response,200,visibleState(db,user));
-  if(request.method==='POST'&&url.pathname==='/api/reports'){
-    if(!['Operator','Administrator'].includes(user.role))return json(response,403,{error:'FORBIDDEN'});
-    const input=await body(request);const kg=Number(input.kg);const price=Number(input.price);
-    const reportDate=String(input.date||new Date().toISOString().slice(0,10));
-    if(!input.org||!input.type||!input.source||!/^\d{4}-\d{2}-\d{2}$/.test(reportDate)||!Number.isFinite(kg)||kg<=0||kg>10000||!Number.isFinite(price)||price<0||price>10000000)return json(response,400,{error:'INVALID_REPORT'});
-    const report={id:`EF-${Date.now().toString(36).toUpperCase()}`,org:String(input.org).slice(0,80),owner:user.email,date:reportDate,type:String(input.type).slice(0,60),kg,status:input.status==='draft'?'draft':'submitted',reason:String(input.reason||'unknown').slice(0,30),price,source:String(input.source).slice(0,80),notes:String(input.notes||'').slice(0,500),photo:String(input.photo||'').slice(0,2_000_000),createdAt:now(),updatedAt:now()};
-    db.reports.unshift(report);addEvent(db,report.id,report.status==='draft'?'created':'submitted',user);if(report.status==='submitted')notify(db,{role:'Reviewer',title:'Жаңа есеп жіберілді',reportId:report.id});await saveDb(db);return json(response,201,visibleState(db,user));
-  }
-  const reportMatch=url.pathname.match(/^\/api\/reports\/([^/]+)$/);
-  if(reportMatch&&request.method==='PATCH'){
-    const report=db.reports.find(item=>item.id===decodeURIComponent(reportMatch[1]));if(!report)return json(response,404,{error:'NOT_FOUND'});
-    const input=await body(request);const action=input.action;
-    if(action==='startReview'){
-      if(!['Reviewer','Administrator'].includes(user.role)||report.status!=='submitted')return json(response,403,{error:'FORBIDDEN'});
-      report.status='review';report.updatedAt=now();addEvent(db,report.id,'review',user);notify(db,{recipient:report.owner,title:'Есеп тексеруге алынды',reportId:report.id});
-    }else if(action==='approve'||action==='return'){
-      if(!['Reviewer','Administrator'].includes(user.role)||report.status!=='review')return json(response,403,{error:'FORBIDDEN'});
-      if(action==='return'&&!String(input.comment||'').trim())return json(response,400,{error:'COMMENT_REQUIRED'});
-      report.status=action==='approve'?'approved':'returned';report.reviewComment=String(input.comment||'').slice(0,500);report.updatedAt=now();addEvent(db,report.id,report.status,user,report.reviewComment);notify(db,{recipient:report.owner,title:action==='approve'?'Есеп қабылданды':'Есеп түзетуге қайтарылды',reportId:report.id});
-    }else{
-      if(!canEdit(user,report))return json(response,403,{error:'FORBIDDEN'});
-      const kg=Number(input.kg);const price=Number(input.price);if(!Number.isFinite(kg)||kg<=0||!Number.isFinite(price)||price<0)return json(response,400,{error:'INVALID_REPORT'});
-      Object.assign(report,{org:String(input.org).slice(0,80),type:String(input.type).slice(0,60),kg,price,reason:String(input.reason||'unknown').slice(0,30),source:String(input.source).slice(0,80),notes:String(input.notes||'').slice(0,500),photo:String(input.photo||report.photo||'').slice(0,2_000_000),status:input.status==='draft'?'draft':'submitted',reviewComment:'',updatedAt:now()});addEvent(db,report.id,report.status==='draft'?'updated':'resubmitted',user);if(report.status==='submitted')notify(db,{role:'Reviewer',title:'Түзетілген есеп қайта жіберілді',reportId:report.id});
-    }
-    await saveDb(db);return json(response,200,visibleState(db,user));
-  }
-  if(request.method==='POST'&&url.pathname==='/api/goals'){
-    if(!['Reviewer','Administrator'].includes(user.role))return json(response,403,{error:'FORBIDDEN'});const input=await body(request);const baseline=Number(input.baseline),current=Number(input.current),target=Number(input.target);if(!input.org||![baseline,current,target].every(Number.isFinite)||baseline<=0||current<0||target<=0||target>100)return json(response,400,{error:'INVALID_GOAL'});let goal=db.goals.find(item=>item.org===input.org);if(goal)Object.assign(goal,{baseline,current,target,updatedAt:now()});else db.goals.push({id:`GOAL-${Date.now()}`,org:input.org,baseline,current,target,updatedAt:now()});await saveDb(db);return json(response,200,visibleState(db,user));
-  }
+  const db=await loadDb(),user=currentUser(request,db);if(!user)return json(response,401,{error:'AUTH_REQUIRED'});if(request.method==='GET'&&url.pathname==='/api/state')return json(response,200,visibleState(db,user));
+  const reportMatch=url.pathname.match(/^\/api\/reports\/([^/]+)$/);if(reportMatch&&request.method==='PATCH'){const report=db.reports.find(item=>item.id===decodeURIComponent(reportMatch[1]));if(!report)return json(response,404,{error:'NOT_FOUND'});const input=await body(request),action=input.action;if(action==='startReview'){if(!canReview(user)||report.status!=='submitted')return json(response,403,{error:'FORBIDDEN'});report.status='review';report.reviewer=user.email;addEvent(db,report.id,'review',user)}else if(action==='approve'||action==='return'){if(!canReview(user)||report.status!=='review')return json(response,403,{error:'FORBIDDEN'});if(action==='return'&&!String(input.comment||'').trim())return json(response,400,{error:'COMMENT_REQUIRED'});report.status=action==='approve'?'approved':'returned';report.reviewComment=String(input.comment||'').slice(0,500);addEvent(db,report.id,report.status,user,report.reviewComment)}else{if(!canEdit(user,report))return json(response,403,{error:'FORBIDDEN'});let normalized;try{normalized=normalizeInput(db,input,user)}catch{return json(response,400,{error:'INVALID_REPORT'})}if(!normalized)return json(response,400,{error:'INVALID_REPORT'});report.versions=report.versions||[];report.versions.unshift({entries:clone(report.entries),status:report.status,time:report.updatedAt});Object.assign(report,normalized,{status:input.status==='submitted'?'submitted':'draft',reviewComment:''});addEvent(db,report.id,report.status==='submitted'?'resubmitted':'updated',user)}report.updatedAt=now();await saveDb(db);return json(response,200,visibleState(db,user))}
+  if(request.method==='POST'&&url.pathname==='/api/goals'){if(!canReview(user))return json(response,403,{error:'FORBIDDEN'});const input=await body(request),baseline=Number(input.baseline),current=Number(input.current),target=Number(input.target);if(!input.org||![baseline,current,target].every(Number.isFinite)||baseline<=0||current<0||target<=0||target>100)return json(response,400,{error:'INVALID_GOAL'});let goal=db.goals.find(item=>item.org===input.org);if(goal)Object.assign(goal,{baseline,current,target,updatedAt:now()});else db.goals.push({id:`GOAL-${Date.now()}`,org:input.org,baseline,current,target,updatedAt:now()});await saveDb(db);return json(response,200,visibleState(db,user))}
   if(request.method==='POST'&&url.pathname==='/api/notifications/read'){db.notifications.filter(item=>!item.recipient||item.recipient===user.email||item.role===user.role).forEach(item=>item.read=true);await saveDb(db);return json(response,200,visibleState(db,user))}
-  if(request.method==='POST'&&url.pathname==='/api/reminders/run'){
-    if(!['Reviewer','Administrator'].includes(user.role))return json(response,403,{error:'FORBIDDEN'});
-    const period=new Date().toISOString().slice(0,7);const submitted=new Set(db.reports.filter(item=>item.date.startsWith(period)&&item.status!=='draft').map(item=>item.org));
-    organizationRegistry.filter(org=>!submitted.has(org.name)).forEach(org=>notify(db,{recipient:org.responsible,title:`Есеп мерзімі: ${org.name}`,reportId:''}));
-    await saveDb(db);return json(response,200,visibleState(db,user));
-  }
-  return json(response,404,{error:'NOT_FOUND'});
+  if(request.method==='POST'&&url.pathname==='/api/reminders/run'){if(!canReview(user))return json(response,403,{error:'FORBIDDEN'});runReminderCycle(db,true);await saveDb(db);return json(response,200,visibleState(db,user))}
+  if(request.method==='POST'&&url.pathname==='/api/organizations'){if(user.role!=='Administrator')return json(response,403,{error:'FORBIDDEN'});const input=await body(request),item={...input,id:String(input.id||`ORG-${Date.now()}`).toUpperCase().slice(0,12),deadlineDay:Number(input.deadlineDay||5),active:input.active!==false};if(!item.name||!item.kind||!db.templates.some(template=>template.id===item.template)||!item.responsible)return json(response,400,{error:'INVALID_ORGANIZATION'});const index=db.organizations.findIndex(org=>org.id===item.id),previous=index>=0?db.organizations[index]:null;if(index>=0)db.organizations[index]=item;else db.organizations.push(item);if(previous&&previous.name!==item.name)db.locations.filter(location=>location.org===previous.name).forEach(location=>location.org=item.name);if(!db.locations.some(location=>location.org===item.name))db.locations.push({id:`${item.id}-01`,org:item.name,name:`${item.name} · Есепке алу орны`});await saveDb(db);return json(response,200,visibleState(db,user))}
+  if(request.method==='POST'&&url.pathname==='/api/locations'){if(user.role!=='Administrator')return json(response,403,{error:'FORBIDDEN'});const input=await body(request),id=String(input.id||'').trim().toUpperCase().slice(0,24),name=String(input.name||'').trim(),org=String(input.org||'').trim();if(!/^[A-Z0-9-]{2,24}$/.test(id)||name.length<2||!db.organizations.some(item=>item.name===org&&item.active!==false))return json(response,400,{error:'INVALID_LOCATION'});const item={id,name,org,active:input.active!==false},index=db.locations.findIndex(location=>location.id===id);if(index>=0)db.locations[index]=item;else db.locations.push(item);await saveDb(db);return json(response,200,visibleState(db,user))}
+  if(request.method==='POST'&&url.pathname==='/api/templates'){if(user.role!=='Administrator')return json(response,403,{error:'FORBIDDEN'});const input=await body(request),item={...input,id:String(input.id||`TPL-${Date.now()}`).toUpperCase().slice(0,24),types:Array.isArray(input.types)?input.types:[]};const index=db.templates.findIndex(value=>value.id===item.id);if(index>=0)db.templates[index]=item;else db.templates.push(item);await saveDb(db);return json(response,200,visibleState(db,user))}
+  if(request.method==='POST'&&url.pathname==='/api/waste-types'){if(!['User','Administrator'].includes(user.role))return json(response,403,{error:'FORBIDDEN'});const input=await body(request),org=user.role==='User'?user.org:String(input.org||db.organizations[0]?.name||''),organization=db.organizations.find(item=>item.name===org),name=String(input.name||'').trim(),unit=input.unit==='l'?'l':'kg',disposalDefault=normalizeDisposal(String(input.disposalDefault||''));if(!organization||name.length<2||!db.disposalMethods.includes(disposalDefault))return json(response,400,{error:'INVALID_WASTE_TYPE'});const item={id:String(input.id||`custom-${Date.now()}`).toLowerCase(),name,labels:{kk:name,ru:name,en:name},category:'custom',unit,disposalDefault,org,recyclability:Boolean(input.recyclable)?'yes':'no',recyclable:Boolean(input.recyclable),co2:Number(input.co2||0),co2Saving:Number(input.co2||0)*1000,active:input.active!==false};if(db.wasteTypes.some(value=>value.name.toLowerCase()===name.toLowerCase()))return json(response,409,{error:'DUPLICATE_WASTE_TYPE'});db.wasteTypes.push(item);const template=db.templates.find(value=>value.id===organization.template);if(template&&!template.types.includes(name))template.types.push(name);await saveDb(db);return json(response,200,visibleState(db,user))}
+  if(request.method==='POST'&&url.pathname==='/api/members'){if(user.role!=='Administrator')return json(response,403,{error:'FORBIDDEN'});const input=await body(request),index=db.members.findIndex(value=>value.id===input.id),existing=index>=0?db.members[index]:null,email=String(input.email||'').trim().toLowerCase(),password=String(input.password||'');if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!['User','Reviewer','Administrator','Leadership'].includes(input.role)||!(input.org==='ATU'||db.organizations.some(org=>org.name===input.org))||(!existing&&password.length<8)||db.members.some((member,memberIndex)=>memberIndex!==index&&member.email.toLowerCase()===email))return json(response,400,{error:'INVALID_MEMBER'});const item={...input,id:input.id||`U-${Date.now()}`,email,passwordHash:password?hashPassword(password):existing.passwordHash,active:input.active!==false};delete item.password;if(index>=0)db.members[index]=item;else db.members.push(item);await saveDb(db);return json(response,200,visibleState(db,user))}
+  return json(response,404,{error:'NOT_FOUND'})
 }
 
-const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.webp':'image/webp','.svg':'image/svg+xml','.pdf':'application/pdf'};
-async function serve(request,response,url){let pathname=decodeURIComponent(url.pathname==='/'?'/index.html':url.pathname);const target=normalize(join(publicRoot,pathname));if(!target.startsWith(publicRoot+sep))return json(response,403,{error:'FORBIDDEN'});try{const info=await stat(target);if(!info.isFile())throw new Error();response.writeHead(200,{'content-type':mime[extname(target).toLowerCase()]||'application/octet-stream','cache-control':'no-cache'});createReadStream(target).pipe(response)}catch{json(response,404,{error:'NOT_FOUND'})}}
-const server=http.createServer(async(request,response)=>{try{const url=new URL(request.url,`http://${request.headers.host||'localhost'}`);if(url.pathname.startsWith('/api/'))await api(request,response,url);else await serve(request,response,url)}catch(error){console.error(error);json(response,error.message==='Payload too large'?413:500,{error:'SERVER_ERROR'})}});
-server.listen(port,'127.0.0.1',()=>console.log(`EcoFood ATU server: http://127.0.0.1:${port}`));
+// Body can only be consumed once; report creation is handled separately here.
+async function createReport(request,response,db,user){const input=await body(request);let normalized;try{normalized=normalizeInput(db,input,user)}catch{return json(response,400,{error:'INVALID_REPORT'})}if(!normalized)return json(response,400,{error:'INVALID_REPORT'});const duplicate=db.reports.some(report=>report.org===normalized.org&&report.status!=='returned'&&report.entries?.some(saved=>normalized.entries.some(entry=>entry.date===saved.date&&entry.type===saved.type&&entry.source===saved.source)));if(duplicate)return json(response,409,{error:'DUPLICATE_REPORT'});const report={id:`EF-${Date.now().toString(36).toUpperCase()}`,owner:user.email,...normalized,status:input.status==='submitted'?'submitted':'draft',reviewer:'',versions:[],reviewComment:'',createdAt:now(),updatedAt:now()};db.reports.unshift(report);addEvent(db,report.id,report.status==='submitted'?'submitted':'created',user);if(report.status==='submitted'){notify(db,{role:'Reviewer',title:'Жаңа кезеңдік есеп жіберілді',reportId:report.id});notify(db,{role:'Administrator',title:'Жаңа кезеңдік есеп жіберілді',reportId:report.id})}await saveDb(db);return json(response,201,visibleState(db,user))}
+
+const originalApi=api;
+async function routedApi(request,response,url){if(request.method==='POST'&&url.pathname==='/api/reports'){const db=await loadDb(),user=currentUser(request,db);if(!user)return json(response,401,{error:'AUTH_REQUIRED'});if(!['User','Administrator'].includes(user.role))return json(response,403,{error:'FORBIDDEN'});return createReport(request,response,db,user)}return originalApi(request,response,url)}
+const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.webp':'image/webp','.svg':'image/svg+xml','.pdf':'application/pdf','.json':'application/json; charset=utf-8','.webmanifest':'application/manifest+json'};
+async function serve(request,response,url){const pathname=decodeURIComponent(url.pathname==='/'?'/index.html':url.pathname),target=normalize(join(publicRoot,pathname));if(!target.startsWith(publicRoot+sep))return json(response,403,{error:'FORBIDDEN'});try{const info=await stat(target);if(!info.isFile())throw new Error();response.writeHead(200,{'content-type':mime[extname(target).toLowerCase()]||'application/octet-stream','cache-control':'no-cache'});createReadStream(target).pipe(response)}catch{return json(response,404,{error:'NOT_FOUND'})}}
+const server=http.createServer(async(request,response)=>{try{const url=new URL(request.url,`http://${request.headers.host||'localhost'}`);if(url.pathname.startsWith('/api/'))await routedApi(request,response,url);else await serve(request,response,url)}catch(error){console.error(error);json(response,error.message==='Payload too large'?413:500,{error:'SERVER_ERROR'})}});
+async function automaticReminders(){const db=await loadDb(),created=runReminderCycle(db);if(created||db.reminderRuns)await saveDb(db)}
+await automaticReminders();setInterval(()=>automaticReminders().catch(console.error),60*60*1000).unref();server.listen(port,'127.0.0.1',()=>console.log(`EcoFood ATU server: http://127.0.0.1:${port}`));

@@ -1,41 +1,43 @@
 # EcoFood ATU
 
-Responsive trilingual MVP for food-waste registration, review, reporting, and ESG analytics at ATU University.
+ATU университет кешеніндегі тамақ қалдықтарын тіркеу, тексеру, есеп беру және ESG-аналитикаға арналған қазақша, орысша және ағылшынша MVP.
 
-## Run locally
-
-Run the included server so authentication and shared persistence work:
+## Іске қосу
 
 ```powershell
 node server.mjs
 ```
 
-Open `http://127.0.0.1:4174`. Data is stored in `data/ecofood.json` and survives server restarts. Sessions are HttpOnly cookies and expire after eight hours; active sessions do not survive a server restart.
+Содан кейін `http://127.0.0.1:4174` мекенжайын ашыңыз. Деректер `data/ecofood.json` файлында сақталады. Сессия HttpOnly cookie арқылы сегіз сағат жұмыс істейді. GitHub Pages нұсқасы серверсіз демонстрация болып табылады және деректерді тек сол браузерде сақтайды; оны ортақ қорғалған дерекқор деп қолдануға болмайды.
 
-Demo accounts use password `demo2026`:
+Барлық демо аккаунттың құпиясөзі: `demo2026`.
 
-- `operator@atu.kz`: creates, edits drafts and resubmits returned reports.
-- `reviewer@atu.kz`: reviews reports, manages goals, reports and analytics.
-- `admin@atu.kz`: full access.
-- `leadership@atu.kz`: read-only access to the registry, reports, analytics and ESG goals.
+- `user@atu.kz` — өз ұйымының есептерін жасайды және қайта жібереді;
+- `reviewer@atu.kz` — есептерді тексереді, пікір қалдырады, қабылдайды немесе қайтарады;
+- `admin@atu.kz` — ұйымдар, пайдаланушылар және анықтамалықтарды басқарады;
+- `leadership@atu.kz` — есептер мен ESG көрсеткіштерін тек оқу режимінде көреді.
 
-The server stores reports, photos, review history, notifications and reduction goals in a local JSON database. This is a functioning single-server MVP, not production infrastructure. Passwords are fixed demo credentials and uploaded images are stored as data URLs. Production deployment requires hashed passwords or institutional SSO, a managed database, object storage, backups, rate limiting, CSRF protection and HTTPS.
+Құпиясөздер ашық мәтінмен емес, `scrypt` хэшімен сақталады және API жауабына берілмейді. Сервер пайдаланушыны өз ұйымымен шектейді, болашақ күндерді қабылдамайды және есептік кезеңді тексереді. Бұл — бір серверлік жұмыс істейтін MVP. Өндірістік енгізуге ATU SSO, басқарылатын дерекқор, объектілік фото сақтау, резервтік көшіру, rate limiting, CSRF қорғанысы және HTTPS қажет.
 
-Waste reduction includes required reason selection, product cost per kg, a live potential-savings calculator, goals normalized per 100 meals, and a local change history. Recommendations use only approved reports with a known reason; legacy demo records are not assigned invented causes. Goal measurements are manually entered and are not claimed to be automatically measured savings.
+## Алты бағыт
 
-Role permissions are enforced by the local server. Collection-point QR images are rendered through QuickChart and encode a form link with a location ID. Camera QR decoding and offline synchronization are not implemented. The history is useful for the MVP but is not a cryptographically tamper-proof audit log.
+1. **Digital Forms:** бес ресми ұйымға жеке шаблон, бір кезеңдік есепке бірнеше өлшеу, кг/л, кәдеге жарату тәсілі, жаңа қалдық түрін тікелей қосу және серверлік тексеру.
+2. **Mobile Input:** QR арқылы орынды автоматты таңдау, камера/фото, жоба сақтау және қолмен код енгізу баламасы.
+3. **Submission Workflow:** жоба → жіберілді → тексеруде → қабылданды/қайтарылды, пікір, еске салғыш және өзгерістер тарихы.
+4. **Organizations & Roles:** ТПП, ТХиПП, ATU INN, ATU кофеханасы және 1–2-корпустар асханасы; пайдаланушы, тексеруші, әкімші және басшылық рөлдері.
+5. **Consolidation & Reporting:** қабылданған есептердің бірыңғай тізілімі, ай/тоқсан/жыл, тапсырмаған ұйымдарды бақылау, Excel және Unicode PDF экспорты.
+6. **Analytics & Dashboard:** нақты енгізілген деректерден динамика, құрылым, ұйым/кезең салыстыруы, тоқсандық өзгеріс, ауытқу, қайта өңделетін үлес, масса, CO₂e, су ізі және т/жыл бағасы.
 
-## Six tracks
+Демо деректер бес ресми ұйым бойынша 2026 жылғы қыркүйек–қараша аралығын қамтиды. Қалдықтар анықтамалығында 19 қалдық түрі және 7 кәдеге жарату тәсілі бар. CO₂ үнемі `масса (т) × (ҚТҚ коэффициенті − таңдалған тәсіл коэффициенті)` формуласымен, пайдаланылған май массасы `литр × 0,92` арқылы есептеледі. Коэффициенттер UK DEFRA/BEIS 2024 `Waste disposal` деректеріне негізделген және Қазақстан үшін бағдарлық мәндер; ресми ESG есебіне дейін ATU оларды бекітуі керек. Қосымша әдістемелік сілтемелер: [EPA WARM](https://www.epa.gov/system/files/documents/2023-12/warm_organic_materials_v16_dec.pdf), [FAO Food Wastage Footprint](https://www.fao.org/fileadmin/templates/nr/sustainability_pathways/docs/Food_Wastage_footprint_and_climate_change.pdf), [UN SDG 12](https://sdgs.un.org/goals/goal12).
 
-1. **Digital Forms:** organization templates, expanded waste categories, date entry, daily/monthly totals and server-side range validation.
-2. **Mobile Input:** responsive forms, drafts, camera photo input and location QR links.
-3. **Submission Workflow:** draft → submitted → in review → approved/returned, comments, reminders and event history.
-4. **Organizations & Roles:** seven ATU units and four enforced roles (operator, reviewer, administrator and leadership).
-5. **Consolidation & Reporting:** approved registry, month/quarter/year views, filtered Excel/PDF output and missing-submission control.
-6. **Analytics & Dashboard:** trends, composition, organization comparison, recyclable share, anomalies, mass, CO₂e and water indicators.
-
-Validate calculations and the complete server workflow with:
+## Тексеру
 
 ```powershell
-node --test tests/impact.test.cjs tests/server.test.mjs
+node --test tests/*.test.*
 ```
+
+Архитектура, деректер байланысы және ағымдағы/мақсатты процесс [docs/architecture.md](docs/architecture.md) файлында берілген.
+
+## AI қолдану туралы ашықтық
+
+Жобаны әзірлеу мен тексеруде OpenAI Codex/ChatGPT көмекші құрал ретінде қолданылды. Шешімдер, талаптарға сәйкестік және жарияланған нәтиже команда тарапынан тексерілуі тиіс.

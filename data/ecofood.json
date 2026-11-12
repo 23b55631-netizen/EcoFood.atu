@@ -1,84 +1,724 @@
 {
   "reports": [
     {
-      "id": "EF-2042",
-      "org": "Coffee Point",
-      "owner": "operator@atu.kz",
-      "date": "2026-11-07",
-      "type": "Coffee grounds",
-      "kg": 12,
-      "status": "submitted",
-      "reason": "prep",
-      "price": 1800,
-      "source": "Coffee bar",
-      "notes": "Morning shift",
-      "photo": "",
-      "createdAt": "2026-11-07T08:30:00.000Z",
-      "updatedAt": "2026-11-07T08:30:00.000Z"
-    },
-    {
-      "id": "EF-2041",
-      "org": "Main Canteen",
-      "owner": "operator@atu.kz",
-      "date": "2026-11-06",
-      "type": "Mixed food",
-      "kg": 48,
-      "status": "review",
-      "reason": "over",
-      "price": 1500,
-      "source": "Preparation zone",
-      "notes": "Lunch service",
-      "photo": "",
-      "createdAt": "2026-11-06T09:15:00.000Z",
-      "updatedAt": "2026-11-06T09:15:00.000Z"
-    },
-    {
-      "id": "EF-2040",
-      "org": "Main Canteen",
-      "owner": "operator@atu.kz",
-      "date": "2026-11-05",
-      "type": "Bakery",
+      "id": "EF-3000",
+      "org": "ТПП кафедрасы",
+      "owner": "tpp@atu.kz",
+      "period": "2026-09",
       "kg": 22,
-      "status": "approved",
-      "reason": "portion",
-      "price": 950,
-      "source": "Serving line",
-      "notes": "",
-      "photo": "",
-      "createdAt": "2026-11-05T10:20:00.000Z",
-      "updatedAt": "2026-11-05T12:05:00.000Z"
-    },
-    {
-      "id": "EF-2039",
-      "org": "Main Canteen",
-      "owner": "operator@atu.kz",
-      "date": "2026-11-05",
-      "type": "Vegetables",
-      "kg": 31,
-      "status": "returned",
-      "reason": "prep",
-      "price": 1250,
-      "source": "Preparation zone",
-      "notes": "Фотоны анық түсіріңіз",
-      "photo": "",
-      "createdAt": "2026-11-05T08:10:00.000Z",
-      "updatedAt": "2026-11-05T11:30:00.000Z"
-    },
-    {
-      "id": "EF-2038",
-      "org": "Main Canteen",
-      "owner": "operator@atu.kz",
-      "date": "2026-11-04",
-      "type": "Mixed food",
-      "kg": 39,
+      "liters": 0,
+      "type": "Бірнеше санат",
+      "source": "Оқу зертханасы",
+      "date": "2026-09-11",
+      "entries": [
+        {
+          "id": "R-0-0-0",
+          "date": "2026-09-10",
+          "type": "Орама қалдықтары",
+          "quantity": 12,
+          "unit": "kg",
+          "disposal": "Қайта өңдеуге тапсыру",
+          "source": "Оқу зертханасы",
+          "reason": "over",
+          "price": 1100,
+          "notes": "",
+          "photo": ""
+        },
+        {
+          "id": "R-0-0-1",
+          "date": "2026-09-11",
+          "type": "Ет сүйектері",
+          "quantity": 10,
+          "unit": "kg",
+          "disposal": "Анаэробты ашыту (биогаз)",
+          "source": "Оқу зертханасы",
+          "reason": "portion",
+          "price": 700,
+          "notes": "",
+          "photo": ""
+        }
+      ],
       "status": "approved",
       "reason": "over",
-      "price": 1600,
-      "source": "Plate waste station",
-      "notes": "",
+      "price": 1100,
+      "notes": "3 айлық демо-деректер",
       "photo": "",
-      "createdAt": "2026-11-04T09:00:00.000Z",
-      "updatedAt": "2026-11-04T13:00:00.000Z"
+      "reviewer": "admin@atu.kz",
+      "versions": [],
+      "createdAt": "2026-09-12T09:00:00.000Z",
+      "updatedAt": "2026-09-12T11:00:00.000Z"
+    },
+    {
+      "id": "EF-3001",
+      "org": "ТХиПП кафедрасы",
+      "owner": "txpp@atu.kz",
+      "period": "2026-09",
+      "kg": 28,
+      "liters": 0,
+      "type": "Бірнеше санат",
+      "source": "Оқу зертханасы",
+      "date": "2026-09-11",
+      "entries": [
+        {
+          "id": "R-0-1-0",
+          "date": "2026-09-10",
+          "type": "Жұмыртқа қабығы",
+          "quantity": 15,
+          "unit": "kg",
+          "disposal": "Компосттау",
+          "source": "Оқу зертханасы",
+          "reason": "over",
+          "price": 1100,
+          "notes": "",
+          "photo": ""
+        },
+        {
+          "id": "R-0-1-1",
+          "date": "2026-09-11",
+          "type": "Жеміс-көкөніс қалдықтары",
+          "quantity": 13,
+          "unit": "kg",
+          "disposal": "Компосттау",
+          "source": "Оқу зертханасы",
+          "reason": "portion",
+          "price": 700,
+          "notes": "",
+          "photo": ""
+        }
+      ],
+      "status": "approved",
+      "reason": "over",
+      "price": 1100,
+      "notes": "3 айлық демо-деректер",
+      "photo": "",
+      "reviewer": "admin@atu.kz",
+      "versions": [],
+      "createdAt": "2026-09-12T09:00:00.000Z",
+      "updatedAt": "2026-09-12T11:00:00.000Z"
+    },
+    {
+      "id": "EF-3002",
+      "org": "ATU INN оқу-қонақ үй кешені",
+      "owner": "inn@atu.kz",
+      "period": "2026-09",
+      "kg": 46,
+      "liters": 0,
+      "type": "Бірнеше санат",
+      "source": "Қонақ үй асханасы",
+      "date": "2026-09-11",
+      "entries": [
+        {
+          "id": "R-0-2-0",
+          "date": "2026-09-10",
+          "type": "Көкөніс қабықтары",
+          "quantity": 24,
+          "unit": "kg",
+          "disposal": "Компосттау",
+          "source": "Қонақ үй асханасы",
+          "reason": "over",
+          "price": 1100,
+          "notes": "",
+          "photo": ""
+        },
+        {
+          "id": "R-0-2-1",
+          "date": "2026-09-11",
+          "type": "Сатылмаған өнім қалдықтары",
+          "quantity": 22,
+          "unit": "kg",
+          "disposal": "Сатылмаған өнімді беру",
+          "source": "Қонақ үй асханасы",
+          "reason": "portion",
+          "price": 700,
+          "notes": "",
+          "photo": ""
+        }
+      ],
+      "status": "approved",
+      "reason": "over",
+      "price": 1100,
+      "notes": "3 айлық демо-деректер",
+      "photo": "",
+      "reviewer": "admin@atu.kz",
+      "versions": [],
+      "createdAt": "2026-09-12T09:00:00.000Z",
+      "updatedAt": "2026-09-12T11:00:00.000Z"
+    },
+    {
+      "id": "EF-3003",
+      "org": "АТУ кофеханасы (ЖК «Canella»)",
+      "owner": "cafe@atu.kz",
+      "period": "2026-09",
+      "kg": 18,
+      "liters": 0,
+      "type": "Бірнеше санат",
+      "source": "Кофе-бар",
+      "date": "2026-09-11",
+      "entries": [
+        {
+          "id": "R-0-3-0",
+          "date": "2026-09-10",
+          "type": "Кофе сығындысы",
+          "quantity": 10,
+          "unit": "kg",
+          "disposal": "Компосттау",
+          "source": "Кофе-бар",
+          "reason": "over",
+          "price": 1100,
+          "notes": "",
+          "photo": ""
+        },
+        {
+          "id": "R-0-3-1",
+          "date": "2026-09-11",
+          "type": "Картон ыдыс",
+          "quantity": 8,
+          "unit": "kg",
+          "disposal": "Қайта өңдеуге тапсыру",
+          "source": "Кофе-бар",
+          "reason": "portion",
+          "price": 700,
+          "notes": "",
+          "photo": ""
+        }
+      ],
+      "status": "approved",
+      "reason": "over",
+      "price": 1100,
+      "notes": "3 айлық демо-деректер",
+      "photo": "",
+      "reviewer": "admin@atu.kz",
+      "versions": [],
+      "createdAt": "2026-09-12T09:00:00.000Z",
+      "updatedAt": "2026-09-12T11:00:00.000Z"
+    },
+    {
+      "id": "EF-3004",
+      "org": "1, 2-корпустар асхана кешені (ЖК «Искандер»)",
+      "owner": "user@atu.kz",
+      "period": "2026-09",
+      "kg": 32,
+      "liters": 30,
+      "type": "Бірнеше санат",
+      "source": "1-корпус асханасы",
+      "date": "2026-09-11",
+      "entries": [
+        {
+          "id": "R-0-4-0",
+          "date": "2026-09-10",
+          "type": "Залдан шыққан тағам қалдықтары",
+          "quantity": 32,
+          "unit": "kg",
+          "disposal": "Анаэробты ашыту (биогаз)",
+          "source": "1-корпус асханасы",
+          "reason": "over",
+          "price": 1100,
+          "notes": "",
+          "photo": ""
+        },
+        {
+          "id": "R-0-4-1",
+          "date": "2026-09-11",
+          "type": "Пайдаланылған май",
+          "quantity": 30,
+          "unit": "l",
+          "disposal": "Пайдаланылған майды арнайы ұйымға тапсыру",
+          "source": "1-корпус асханасы",
+          "reason": "portion",
+          "price": 700,
+          "notes": "",
+          "photo": ""
+        }
+      ],
+      "status": "approved",
+      "reason": "over",
+      "price": 1100,
+      "notes": "3 айлық демо-деректер",
+      "photo": "",
+      "reviewer": "admin@atu.kz",
+      "versions": [],
+      "createdAt": "2026-09-12T09:00:00.000Z",
+      "updatedAt": "2026-09-12T11:00:00.000Z"
+    },
+    {
+      "id": "EF-3005",
+      "org": "ТПП кафедрасы",
+      "owner": "tpp@atu.kz",
+      "period": "2026-10",
+      "kg": 19,
+      "liters": 0,
+      "type": "Бірнеше санат",
+      "source": "Оқу зертханасы",
+      "date": "2026-10-11",
+      "entries": [
+        {
+          "id": "R-1-0-0",
+          "date": "2026-10-10",
+          "type": "Орама қалдықтары",
+          "quantity": 10.5,
+          "unit": "kg",
+          "disposal": "Қайта өңдеуге тапсыру",
+          "source": "Оқу зертханасы",
+          "reason": "over",
+          "price": 1100,
+          "notes": "",
+          "photo": ""
+        },
+        {
+          "id": "R-1-0-1",
+          "date": "2026-10-11",
+          "type": "Ет сүйектері",
+          "quantity": 8.5,
+          "unit": "kg",
+          "disposal": "Анаэробты ашыту (биогаз)",
+          "source": "Оқу зертханасы",
+          "reason": "portion",
+          "price": 700,
+          "notes": "",
+          "photo": ""
+        }
+      ],
+      "status": "approved",
+      "reason": "over",
+      "price": 1100,
+      "notes": "3 айлық демо-деректер",
+      "photo": "",
+      "reviewer": "admin@atu.kz",
+      "versions": [],
+      "createdAt": "2026-10-12T09:00:00.000Z",
+      "updatedAt": "2026-10-12T11:00:00.000Z"
+    },
+    {
+      "id": "EF-3006",
+      "org": "ТХиПП кафедрасы",
+      "owner": "txpp@atu.kz",
+      "period": "2026-10",
+      "kg": 25,
+      "liters": 0,
+      "type": "Бірнеше санат",
+      "source": "Оқу зертханасы",
+      "date": "2026-10-11",
+      "entries": [
+        {
+          "id": "R-1-1-0",
+          "date": "2026-10-10",
+          "type": "Жұмыртқа қабығы",
+          "quantity": 13.5,
+          "unit": "kg",
+          "disposal": "Компосттау",
+          "source": "Оқу зертханасы",
+          "reason": "over",
+          "price": 1100,
+          "notes": "",
+          "photo": ""
+        },
+        {
+          "id": "R-1-1-1",
+          "date": "2026-10-11",
+          "type": "Жеміс-көкөніс қалдықтары",
+          "quantity": 11.5,
+          "unit": "kg",
+          "disposal": "Компосттау",
+          "source": "Оқу зертханасы",
+          "reason": "portion",
+          "price": 700,
+          "notes": "",
+          "photo": ""
+        }
+      ],
+      "status": "approved",
+      "reason": "over",
+      "price": 1100,
+      "notes": "3 айлық демо-деректер",
+      "photo": "",
+      "reviewer": "admin@atu.kz",
+      "versions": [],
+      "createdAt": "2026-10-12T09:00:00.000Z",
+      "updatedAt": "2026-10-12T11:00:00.000Z"
+    },
+    {
+      "id": "EF-3007",
+      "org": "ATU INN оқу-қонақ үй кешені",
+      "owner": "inn@atu.kz",
+      "period": "2026-10",
+      "kg": 43,
+      "liters": 0,
+      "type": "Бірнеше санат",
+      "source": "Қонақ үй асханасы",
+      "date": "2026-10-11",
+      "entries": [
+        {
+          "id": "R-1-2-0",
+          "date": "2026-10-10",
+          "type": "Көкөніс қабықтары",
+          "quantity": 22.5,
+          "unit": "kg",
+          "disposal": "Компосттау",
+          "source": "Қонақ үй асханасы",
+          "reason": "over",
+          "price": 1100,
+          "notes": "",
+          "photo": ""
+        },
+        {
+          "id": "R-1-2-1",
+          "date": "2026-10-11",
+          "type": "Сатылмаған өнім қалдықтары",
+          "quantity": 20.5,
+          "unit": "kg",
+          "disposal": "Сатылмаған өнімді беру",
+          "source": "Қонақ үй асханасы",
+          "reason": "portion",
+          "price": 700,
+          "notes": "",
+          "photo": ""
+        }
+      ],
+      "status": "approved",
+      "reason": "over",
+      "price": 1100,
+      "notes": "3 айлық демо-деректер",
+      "photo": "",
+      "reviewer": "admin@atu.kz",
+      "versions": [],
+      "createdAt": "2026-10-12T09:00:00.000Z",
+      "updatedAt": "2026-10-12T11:00:00.000Z"
+    },
+    {
+      "id": "EF-3008",
+      "org": "АТУ кофеханасы (ЖК «Canella»)",
+      "owner": "cafe@atu.kz",
+      "period": "2026-10",
+      "kg": 15,
+      "liters": 0,
+      "type": "Бірнеше санат",
+      "source": "Кофе-бар",
+      "date": "2026-10-11",
+      "entries": [
+        {
+          "id": "R-1-3-0",
+          "date": "2026-10-10",
+          "type": "Кофе сығындысы",
+          "quantity": 8.5,
+          "unit": "kg",
+          "disposal": "Компосттау",
+          "source": "Кофе-бар",
+          "reason": "over",
+          "price": 1100,
+          "notes": "",
+          "photo": ""
+        },
+        {
+          "id": "R-1-3-1",
+          "date": "2026-10-11",
+          "type": "Картон ыдыс",
+          "quantity": 6.5,
+          "unit": "kg",
+          "disposal": "Қайта өңдеуге тапсыру",
+          "source": "Кофе-бар",
+          "reason": "portion",
+          "price": 700,
+          "notes": "",
+          "photo": ""
+        }
+      ],
+      "status": "approved",
+      "reason": "over",
+      "price": 1100,
+      "notes": "3 айлық демо-деректер",
+      "photo": "",
+      "reviewer": "admin@atu.kz",
+      "versions": [],
+      "createdAt": "2026-10-12T09:00:00.000Z",
+      "updatedAt": "2026-10-12T11:00:00.000Z"
+    },
+    {
+      "id": "EF-3009",
+      "org": "1, 2-корпустар асхана кешені (ЖК «Искандер»)",
+      "owner": "user@atu.kz",
+      "period": "2026-10",
+      "kg": 30.5,
+      "liters": 28.5,
+      "type": "Бірнеше санат",
+      "source": "1-корпус асханасы",
+      "date": "2026-10-11",
+      "entries": [
+        {
+          "id": "R-1-4-0",
+          "date": "2026-10-10",
+          "type": "Залдан шыққан тағам қалдықтары",
+          "quantity": 30.5,
+          "unit": "kg",
+          "disposal": "Анаэробты ашыту (биогаз)",
+          "source": "1-корпус асханасы",
+          "reason": "over",
+          "price": 1100,
+          "notes": "",
+          "photo": ""
+        },
+        {
+          "id": "R-1-4-1",
+          "date": "2026-10-11",
+          "type": "Пайдаланылған май",
+          "quantity": 28.5,
+          "unit": "l",
+          "disposal": "Пайдаланылған майды арнайы ұйымға тапсыру",
+          "source": "1-корпус асханасы",
+          "reason": "portion",
+          "price": 700,
+          "notes": "",
+          "photo": ""
+        }
+      ],
+      "status": "approved",
+      "reason": "over",
+      "price": 1100,
+      "notes": "3 айлық демо-деректер",
+      "photo": "",
+      "reviewer": "admin@atu.kz",
+      "versions": [],
+      "createdAt": "2026-10-12T09:00:00.000Z",
+      "updatedAt": "2026-10-12T11:00:00.000Z"
+    },
+    {
+      "id": "EF-3010",
+      "org": "ТПП кафедрасы",
+      "owner": "tpp@atu.kz",
+      "period": "2026-11",
+      "kg": 16,
+      "liters": 0,
+      "type": "Бірнеше санат",
+      "source": "Оқу зертханасы",
+      "date": "2026-11-11",
+      "entries": [
+        {
+          "id": "R-2-0-0",
+          "date": "2026-11-10",
+          "type": "Орама қалдықтары",
+          "quantity": 9,
+          "unit": "kg",
+          "disposal": "Қайта өңдеуге тапсыру",
+          "source": "Оқу зертханасы",
+          "reason": "over",
+          "price": 1100,
+          "notes": "",
+          "photo": ""
+        },
+        {
+          "id": "R-2-0-1",
+          "date": "2026-11-11",
+          "type": "Ет сүйектері",
+          "quantity": 7,
+          "unit": "kg",
+          "disposal": "Анаэробты ашыту (биогаз)",
+          "source": "Оқу зертханасы",
+          "reason": "portion",
+          "price": 700,
+          "notes": "",
+          "photo": ""
+        }
+      ],
+      "status": "approved",
+      "reason": "over",
+      "price": 1100,
+      "notes": "3 айлық демо-деректер",
+      "photo": "",
+      "reviewer": "admin@atu.kz",
+      "versions": [],
+      "createdAt": "2026-11-12T09:00:00.000Z",
+      "updatedAt": "2026-11-12T11:00:00.000Z"
+    },
+    {
+      "id": "EF-3011",
+      "org": "ТХиПП кафедрасы",
+      "owner": "txpp@atu.kz",
+      "period": "2026-11",
+      "kg": 22,
+      "liters": 0,
+      "type": "Бірнеше санат",
+      "source": "Оқу зертханасы",
+      "date": "2026-11-11",
+      "entries": [
+        {
+          "id": "R-2-1-0",
+          "date": "2026-11-10",
+          "type": "Жұмыртқа қабығы",
+          "quantity": 12,
+          "unit": "kg",
+          "disposal": "Компосттау",
+          "source": "Оқу зертханасы",
+          "reason": "over",
+          "price": 1100,
+          "notes": "",
+          "photo": ""
+        },
+        {
+          "id": "R-2-1-1",
+          "date": "2026-11-11",
+          "type": "Жеміс-көкөніс қалдықтары",
+          "quantity": 10,
+          "unit": "kg",
+          "disposal": "Компосттау",
+          "source": "Оқу зертханасы",
+          "reason": "portion",
+          "price": 700,
+          "notes": "",
+          "photo": ""
+        }
+      ],
+      "status": "approved",
+      "reason": "over",
+      "price": 1100,
+      "notes": "3 айлық демо-деректер",
+      "photo": "",
+      "reviewer": "admin@atu.kz",
+      "versions": [],
+      "createdAt": "2026-11-12T09:00:00.000Z",
+      "updatedAt": "2026-11-12T11:00:00.000Z"
+    },
+    {
+      "id": "EF-3012",
+      "org": "ATU INN оқу-қонақ үй кешені",
+      "owner": "inn@atu.kz",
+      "period": "2026-11",
+      "kg": 40,
+      "liters": 0,
+      "type": "Бірнеше санат",
+      "source": "Қонақ үй асханасы",
+      "date": "2026-11-11",
+      "entries": [
+        {
+          "id": "R-2-2-0",
+          "date": "2026-11-10",
+          "type": "Көкөніс қабықтары",
+          "quantity": 21,
+          "unit": "kg",
+          "disposal": "Компосттау",
+          "source": "Қонақ үй асханасы",
+          "reason": "over",
+          "price": 1100,
+          "notes": "",
+          "photo": ""
+        },
+        {
+          "id": "R-2-2-1",
+          "date": "2026-11-11",
+          "type": "Сатылмаған өнім қалдықтары",
+          "quantity": 19,
+          "unit": "kg",
+          "disposal": "Сатылмаған өнімді беру",
+          "source": "Қонақ үй асханасы",
+          "reason": "portion",
+          "price": 700,
+          "notes": "",
+          "photo": ""
+        }
+      ],
+      "status": "approved",
+      "reason": "over",
+      "price": 1100,
+      "notes": "3 айлық демо-деректер",
+      "photo": "",
+      "reviewer": "admin@atu.kz",
+      "versions": [],
+      "createdAt": "2026-11-12T09:00:00.000Z",
+      "updatedAt": "2026-11-12T11:00:00.000Z"
+    },
+    {
+      "id": "EF-3013",
+      "org": "АТУ кофеханасы (ЖК «Canella»)",
+      "owner": "cafe@atu.kz",
+      "period": "2026-11",
+      "kg": 12,
+      "liters": 0,
+      "type": "Бірнеше санат",
+      "source": "Кофе-бар",
+      "date": "2026-11-11",
+      "entries": [
+        {
+          "id": "R-2-3-0",
+          "date": "2026-11-10",
+          "type": "Кофе сығындысы",
+          "quantity": 7,
+          "unit": "kg",
+          "disposal": "Компосттау",
+          "source": "Кофе-бар",
+          "reason": "over",
+          "price": 1100,
+          "notes": "",
+          "photo": ""
+        },
+        {
+          "id": "R-2-3-1",
+          "date": "2026-11-11",
+          "type": "Картон ыдыс",
+          "quantity": 5,
+          "unit": "kg",
+          "disposal": "Қайта өңдеуге тапсыру",
+          "source": "Кофе-бар",
+          "reason": "portion",
+          "price": 700,
+          "notes": "",
+          "photo": ""
+        }
+      ],
+      "status": "approved",
+      "reason": "over",
+      "price": 1100,
+      "notes": "3 айлық демо-деректер",
+      "photo": "",
+      "reviewer": "admin@atu.kz",
+      "versions": [],
+      "createdAt": "2026-11-12T09:00:00.000Z",
+      "updatedAt": "2026-11-12T11:00:00.000Z"
+    },
+    {
+      "id": "EF-3014",
+      "org": "1, 2-корпустар асхана кешені (ЖК «Искандер»)",
+      "owner": "user@atu.kz",
+      "period": "2026-11",
+      "kg": 29,
+      "liters": 27,
+      "type": "Бірнеше санат",
+      "source": "1-корпус асханасы",
+      "date": "2026-11-11",
+      "entries": [
+        {
+          "id": "R-2-4-0",
+          "date": "2026-11-10",
+          "type": "Залдан шыққан тағам қалдықтары",
+          "quantity": 29,
+          "unit": "kg",
+          "disposal": "Анаэробты ашыту (биогаз)",
+          "source": "1-корпус асханасы",
+          "reason": "over",
+          "price": 1100,
+          "notes": "",
+          "photo": ""
+        },
+        {
+          "id": "R-2-4-1",
+          "date": "2026-11-11",
+          "type": "Пайдаланылған май",
+          "quantity": 27,
+          "unit": "l",
+          "disposal": "Пайдаланылған майды арнайы ұйымға тапсыру",
+          "source": "1-корпус асханасы",
+          "reason": "portion",
+          "price": 700,
+          "notes": "",
+          "photo": ""
+        }
+      ],
+      "status": "approved",
+      "reason": "over",
+      "price": 1100,
+      "notes": "3 айлық демо-деректер",
+      "photo": "",
+      "reviewer": "admin@atu.kz",
+      "versions": [],
+      "createdAt": "2026-11-12T09:00:00.000Z",
+      "updatedAt": "2026-11-12T11:00:00.000Z"
     }
   ],
   "events": [
@@ -86,7 +726,7 @@
       "id": "EV-0",
       "reportId": "EF-2042",
       "action": "submitted",
-      "actor": "operator@atu.kz",
+      "actor": "c-canteen@atu.kz",
       "comment": "",
       "time": "2026-11-07T08:30:00.000Z"
     },
@@ -94,7 +734,7 @@
       "id": "EV-1",
       "reportId": "EF-2039",
       "action": "returned",
-      "actor": "reviewer@atu.kz",
+      "actor": "admin@atu.kz",
       "comment": "Фотоны анық түсіріңіз",
       "time": "2026-11-05T11:30:00.000Z"
     },
@@ -102,7 +742,7 @@
       "id": "EV-2",
       "reportId": "EF-2040",
       "action": "approved",
-      "actor": "reviewer@atu.kz",
+      "actor": "admin@atu.kz",
       "comment": "",
       "time": "2026-11-05T12:05:00.000Z"
     }
@@ -115,37 +755,860 @@
       "current": 8.8,
       "target": 2,
       "updatedAt": "2026-11-07T14:42:45.412Z"
-    },
-    {
-      "id": "GOAL-1794062564850",
-      "org": "Coffee Point",
-      "baseline": 5,
-      "current": 3.8,
-      "target": 2,
-      "updatedAt": "2026-11-07T14:42:44.850Z"
     }
   ],
-  "notifications": [],
+  "notifications": [
+    {
+      "id": "NT-843ea3920a",
+      "recipient": "foodtech@atu.kz",
+      "title": "Есеп мерзімі: Food Technology Department",
+      "reportId": "",
+      "time": "2026-11-10T11:52:04.707Z",
+      "read": false
+    },
+    {
+      "id": "NT-49fa9a3571",
+      "recipient": "inn@atu.kz",
+      "title": "Есеп мерзімі: ATU INN",
+      "reportId": "",
+      "time": "2026-11-10T11:52:04.707Z",
+      "read": false
+    },
+    {
+      "id": "NT-87afe243ae",
+      "recipient": "coffee@atu.kz",
+      "title": "Есеп мерзімі: Coffee Point",
+      "reportId": "",
+      "time": "2026-11-10T11:52:04.707Z",
+      "read": false
+    },
+    {
+      "id": "NT-ec222976f2",
+      "recipient": "b-canteen@atu.kz",
+      "title": "Есеп мерзімі: Building B Canteen",
+      "reportId": "",
+      "time": "2026-11-10T11:52:04.707Z",
+      "read": false
+    }
+  ],
   "locations": [
     {
-      "id": "CP-01",
-      "org": "Coffee Point",
-      "name": "Coffee bar"
+      "id": "TPP-01",
+      "org": "ТПП кафедрасы",
+      "name": "Оқу зертханасы"
     },
     {
-      "id": "MC-01",
-      "org": "Main Canteen",
-      "name": "Preparation zone"
+      "id": "TXPP-01",
+      "org": "ТХиПП кафедрасы",
+      "name": "Оқу зертханасы"
     },
     {
-      "id": "MC-02",
-      "org": "Main Canteen",
-      "name": "Serving line"
+      "id": "INN-01",
+      "org": "ATU INN оқу-қонақ үй кешені",
+      "name": "Қонақ үй асханасы"
     },
     {
-      "id": "MC-03",
-      "org": "Main Canteen",
-      "name": "Plate waste station"
+      "id": "CAFE-01",
+      "org": "АТУ кофеханасы (ЖК «Canella»)",
+      "name": "Кофе-бар"
+    },
+    {
+      "id": "ISK-01",
+      "org": "1, 2-корпустар асхана кешені (ЖК «Искандер»)",
+      "name": "1-корпус асханасы"
+    },
+    {
+      "id": "ISK-02",
+      "org": "1, 2-корпустар асхана кешені (ЖК «Искандер»)",
+      "name": "2-корпус асханасы"
+    }
+  ],
+  "organizations": [
+    {
+      "id": "TPP",
+      "name": "ТПП кафедрасы",
+      "kind": "Оқу зертханасы",
+      "building": "Б корпусы",
+      "address": "Фуркат к-сі, 348/4",
+      "template": "TPP_FORM",
+      "deadlineDay": 7,
+      "responsible": "tpp@atu.kz",
+      "active": true
+    },
+    {
+      "id": "TXPP",
+      "name": "ТХиПП кафедрасы",
+      "kind": "Оқу зертханасы",
+      "building": "Б корпусы",
+      "address": "Фуркат к-сі, 348/4",
+      "template": "TXPP_FORM",
+      "deadlineDay": 7,
+      "responsible": "txpp@atu.kz",
+      "active": true
+    },
+    {
+      "id": "INN",
+      "name": "ATU INN оқу-қонақ үй кешені",
+      "kind": "Қоғамдық тамақтану",
+      "building": "ATU INN",
+      "address": "АТУ кампусы",
+      "template": "INN_FORM",
+      "deadlineDay": 7,
+      "responsible": "inn@atu.kz",
+      "active": true
+    },
+    {
+      "id": "CAFE",
+      "name": "АТУ кофеханасы (ЖК «Canella»)",
+      "kind": "Кофехана",
+      "building": "АТУ кампусы",
+      "address": "Фуркат к-сі, 348/4",
+      "template": "CAFE_FORM",
+      "deadlineDay": 5,
+      "responsible": "canella@atu.kz",
+      "active": true
+    },
+    {
+      "id": "ISK",
+      "name": "1, 2-корпустар асхана кешені (ЖК «Искандер»)",
+      "kind": "Асхана",
+      "building": "1 және 2 корпус",
+      "address": "Фуркат к-сі, 348/4",
+      "template": "ISK_FORM",
+      "deadlineDay": 5,
+      "responsible": "user@atu.kz",
+      "active": true
+    }
+  ],
+  "templates": [
+    {
+      "id": "TPP_FORM",
+      "name": "ТПП кафедрасының есебі",
+      "frequency": "monthly",
+      "types": [
+        "Орама қалдықтары",
+        "Ет сүйектері",
+        "Балық сүйектері"
+      ]
+    },
+    {
+      "id": "TXPP_FORM",
+      "name": "ТХиПП кафедрасының есебі",
+      "frequency": "monthly",
+      "types": [
+        "Жұмыртқа қабығы",
+        "Сахароза",
+        "ПЭТ-бөтелке 1,0 л",
+        "Шыны бөтелке",
+        "Нан-тоқаш өнімдері үлгілерінің қалдықтары",
+        "Кондитерлік өнімдер үлгілерінің қалдықтары",
+        "Жеміс-көкөніс қалдықтары",
+        "Алюминий банкалар"
+      ]
+    },
+    {
+      "id": "INN_FORM",
+      "name": "ATU INN айлық есебі",
+      "frequency": "monthly",
+      "types": [
+        "Көкөніс қабықтары",
+        "Ет өнімдерінің кесінділері",
+        "Залдан шыққан тағам қалдықтары",
+        "Сатылмаған өнім қалдықтары",
+        "Пайдаланылған май",
+        "Картон ыдыс"
+      ]
+    },
+    {
+      "id": "CAFE_FORM",
+      "name": "Canella кофеханасының есебі",
+      "frequency": "monthly",
+      "types": [
+        "Кофе сығындысы",
+        "Картон ыдыс",
+        "Тамақ қалдықтары"
+      ]
+    },
+    {
+      "id": "ISK_FORM",
+      "name": "Искандер асханасының күндік және айлық есебі",
+      "frequency": "daily",
+      "types": [
+        "Көкөніс қабықтары",
+        "Ет өнімдерінің кесінділері",
+        "Залдан шыққан тағам қалдықтары",
+        "Сатылмаған өнім қалдықтары",
+        "Пайдаланылған май",
+        "Картон ыдыс"
+      ]
+    }
+  ],
+  "wasteTypes": [
+    {
+      "id": "plate-waste",
+      "name": "Залдан шыққан тағам қалдықтары",
+      "labels": {
+        "kk": "Залдан шыққан тағам қалдықтары",
+        "ru": "Пищевые отходы из зала",
+        "en": "Food waste from dining hall"
+      },
+      "category": "Органикалық",
+      "unit": "kg",
+      "recyclability": "yes",
+      "recyclable": true,
+      "disposalDefault": "Анаэробты ашыту (биогаз)",
+      "co2Tbo": 700.21,
+      "co2Recommended": 8.88,
+      "co2Saving": 691.33,
+      "co2": 0.69133,
+      "note": {
+        "kk": "Тұтынудан кейінгі тамақ қалдықтары",
+        "ru": "Объедки после потребления",
+        "en": "Post-consumption plate waste"
+      },
+      "active": true
+    },
+    {
+      "id": "unsold",
+      "name": "Сатылмаған өнім қалдықтары",
+      "labels": {
+        "kk": "Сатылмаған өнім қалдықтары",
+        "ru": "Остатки нереализованной продукции",
+        "en": "Unsold food products"
+      },
+      "category": "Органикалық",
+      "unit": "kg",
+      "recyclability": "yes",
+      "recyclable": true,
+      "disposalDefault": "Сатылмаған өнімді беру",
+      "co2Tbo": 700.21,
+      "co2Recommended": 8.88,
+      "co2Saving": 691.33,
+      "co2": 0.69133,
+      "note": {
+        "kk": "Алдымен алдын алу: жарамды өнімді уақытында беру",
+        "ru": "Лучше предотвратить: передать, пока пригодно в пищу",
+        "en": "Prevention is best: donate while still safe to eat"
+      },
+      "active": true
+    },
+    {
+      "id": "food-waste",
+      "name": "Тамақ қалдықтары",
+      "labels": {
+        "kk": "Тамақ қалдықтары",
+        "ru": "Остатки еды",
+        "en": "Food leftovers"
+      },
+      "category": "Органикалық",
+      "unit": "kg",
+      "recyclability": "yes",
+      "recyclable": true,
+      "disposalDefault": "Анаэробты ашыту (биогаз)",
+      "co2Tbo": 700.21,
+      "co2Recommended": 8.88,
+      "co2Saving": 691.33,
+      "co2": 0.69133,
+      "note": {
+        "kk": "",
+        "ru": "",
+        "en": ""
+      },
+      "active": true
+    },
+    {
+      "id": "vegetable-peels",
+      "name": "Көкөніс қабықтары",
+      "labels": {
+        "kk": "Көкөніс қабықтары",
+        "ru": "Очистки овощей",
+        "en": "Vegetable peelings"
+      },
+      "category": "Органикалық",
+      "unit": "kg",
+      "recyclability": "yes",
+      "recyclable": true,
+      "disposalDefault": "Компосттау",
+      "co2Tbo": 700.21,
+      "co2Recommended": 8.88,
+      "co2Saving": 691.33,
+      "co2": 0.69133,
+      "note": {
+        "kk": "Шикізатты бастапқы өңдеу қалдығы",
+        "ru": "Отходы первичной обработки сырья",
+        "en": "Waste from primary raw-material processing"
+      },
+      "active": true
+    },
+    {
+      "id": "fruit-veg",
+      "name": "Жеміс-көкөніс қалдықтары",
+      "labels": {
+        "kk": "Жеміс-көкөніс қалдықтары",
+        "ru": "Отходы фруктов и овощей",
+        "en": "Fruit and vegetable waste"
+      },
+      "category": "Органикалық",
+      "unit": "kg",
+      "recyclability": "yes",
+      "recyclable": true,
+      "disposalDefault": "Компосттау",
+      "co2Tbo": 700.21,
+      "co2Recommended": 8.88,
+      "co2Saving": 691.33,
+      "co2": 0.69133,
+      "note": {
+        "kk": "",
+        "ru": "",
+        "en": ""
+      },
+      "active": true
+    },
+    {
+      "id": "meat-trimmings",
+      "name": "Ет өнімдерінің кесінділері",
+      "labels": {
+        "kk": "Ет өнімдерінің кесінділері",
+        "ru": "Обрезки мясопродуктов",
+        "en": "Meat trimmings"
+      },
+      "category": "Органикалық",
+      "unit": "kg",
+      "recyclability": "partial",
+      "recyclable": false,
+      "disposalDefault": "Анаэробты ашыту (биогаз)",
+      "co2Tbo": 700.21,
+      "co2Recommended": 8.88,
+      "co2Saving": 691.33,
+      "co2": 0.69133,
+      "note": {
+        "kk": "Кәдімгі компост етті қабылдамайды",
+        "ru": "В обычный компост мясо не принимают",
+        "en": "Meat is not accepted in ordinary compost"
+      },
+      "active": true
+    },
+    {
+      "id": "meat-bones",
+      "name": "Ет сүйектері",
+      "labels": {
+        "kk": "Ет сүйектері",
+        "ru": "Мясные кости",
+        "en": "Meat bones"
+      },
+      "category": "Органикалық",
+      "unit": "kg",
+      "recyclability": "partial",
+      "recyclable": false,
+      "disposalDefault": "Анаэробты ашыту (биогаз)",
+      "co2Tbo": 700.21,
+      "co2Recommended": 8.88,
+      "co2Saving": 691.33,
+      "co2": 0.69133,
+      "note": {
+        "kk": "Кәдімгі компост сүйекті қабылдамайды",
+        "ru": "В обычный компост кости не принимают",
+        "en": "Bones are not accepted in ordinary compost"
+      },
+      "active": true
+    },
+    {
+      "id": "fish-bones",
+      "name": "Балық сүйектері",
+      "labels": {
+        "kk": "Балық сүйектері",
+        "ru": "Рыбные кости",
+        "en": "Fish bones"
+      },
+      "category": "Органикалық",
+      "unit": "kg",
+      "recyclability": "partial",
+      "recyclable": false,
+      "disposalDefault": "Анаэробты ашыту (биогаз)",
+      "co2Tbo": 700.21,
+      "co2Recommended": 8.88,
+      "co2Saving": 691.33,
+      "co2": 0.69133,
+      "note": {
+        "kk": "Кәдімгі компост сүйекті қабылдамайды",
+        "ru": "В обычный компост кости не принимают",
+        "en": "Bones are not accepted in ordinary compost"
+      },
+      "active": true
+    },
+    {
+      "id": "egg-shells",
+      "name": "Жұмыртқа қабығы",
+      "labels": {
+        "kk": "Жұмыртқа қабығы",
+        "ru": "Яичная скорлупа",
+        "en": "Eggshells"
+      },
+      "category": "Органикалық",
+      "unit": "kg",
+      "recyclability": "yes",
+      "recyclable": true,
+      "disposalDefault": "Компосттау",
+      "co2Tbo": 700.21,
+      "co2Recommended": 8.88,
+      "co2Saving": 691.33,
+      "co2": 0.69133,
+      "note": {
+        "kk": "",
+        "ru": "",
+        "en": ""
+      },
+      "active": true
+    },
+    {
+      "id": "coffee-grounds",
+      "name": "Кофе сығындысы",
+      "labels": {
+        "kk": "Кофе сығындысы",
+        "ru": "Кофейный жмых",
+        "en": "Coffee grounds"
+      },
+      "category": "Органикалық",
+      "unit": "kg",
+      "recyclability": "yes",
+      "recyclable": true,
+      "disposalDefault": "Компосттау",
+      "co2Tbo": 700.21,
+      "co2Recommended": 8.88,
+      "co2Saving": 691.33,
+      "co2": 0.69133,
+      "note": {
+        "kk": "Жақсы компостталады",
+        "ru": "Хорошо компостируется",
+        "en": "Composts well"
+      },
+      "active": true
+    },
+    {
+      "id": "bakery-samples",
+      "name": "Нан-тоқаш өнімдері үлгілерінің қалдықтары",
+      "labels": {
+        "kk": "Нан-тоқаш өнімдері үлгілерінің қалдықтары",
+        "ru": "Отходы образцов хлебобулочных изделий",
+        "en": "Bakery sample waste"
+      },
+      "category": "Органикалық",
+      "unit": "kg",
+      "recyclability": "yes",
+      "recyclable": true,
+      "disposalDefault": "Анаэробты ашыту (биогаз)",
+      "co2Tbo": 700.21,
+      "co2Recommended": 8.88,
+      "co2Saving": 691.33,
+      "co2": 0.69133,
+      "note": {
+        "kk": "",
+        "ru": "",
+        "en": ""
+      },
+      "active": true
+    },
+    {
+      "id": "confectionery-samples",
+      "name": "Кондитерлік өнімдер үлгілерінің қалдықтары",
+      "labels": {
+        "kk": "Кондитерлік өнімдер үлгілерінің қалдықтары",
+        "ru": "Отходы образцов кондитерских изделий",
+        "en": "Confectionery sample waste"
+      },
+      "category": "Органикалық",
+      "unit": "kg",
+      "recyclability": "yes",
+      "recyclable": true,
+      "disposalDefault": "Анаэробты ашыту (биогаз)",
+      "co2Tbo": 700.21,
+      "co2Recommended": 8.88,
+      "co2Saving": 691.33,
+      "co2": 0.69133,
+      "note": {
+        "kk": "Печенье, карамель",
+        "ru": "Печенье, карамель",
+        "en": "Biscuits and caramel"
+      },
+      "active": true
+    },
+    {
+      "id": "sucrose",
+      "name": "Сахароза",
+      "labels": {
+        "kk": "Сахароза",
+        "ru": "Сахароза",
+        "en": "Sucrose"
+      },
+      "category": "Органикалық",
+      "unit": "kg",
+      "recyclability": "yes",
+      "recyclable": true,
+      "disposalDefault": "Анаэробты ашыту (биогаз)",
+      "co2Tbo": 700.21,
+      "co2Recommended": 8.88,
+      "co2Saving": 691.33,
+      "co2": 0.69133,
+      "note": {
+        "kk": "Тамақ қалдығының коэффициенті қолданылған",
+        "ru": "Допущение: коэффициент как у пищевых отходов",
+        "en": "Assumption: the food-waste factor is used"
+      },
+      "active": true
+    },
+    {
+      "id": "used-oil",
+      "name": "Пайдаланылған май",
+      "labels": {
+        "kk": "Пайдаланылған май",
+        "ru": "Отработанное масло",
+        "en": "Used cooking oil"
+      },
+      "category": "Арнайы",
+      "unit": "l",
+      "recyclability": "yes",
+      "recyclable": true,
+      "disposalDefault": "Пайдаланылған майды арнайы ұйымға тапсыру",
+      "co2Tbo": 700.21,
+      "co2Recommended": 6.41,
+      "co2Saving": 693.8,
+      "co2": 0.6938,
+      "note": {
+        "kk": "1 л ≈ 0,92 кг. Кәрізге төгуге болмайды",
+        "ru": "Допущение: у DEFRA нет фактора для масла. 1 л ≈ 0,92 кг. В канализацию сливать нельзя",
+        "en": "Assumption: DEFRA has no oil factor. 1 L ≈ 0.92 kg. Do not pour into drains"
+      },
+      "active": true
+    },
+    {
+      "id": "cardboard",
+      "name": "Картон ыдыс",
+      "labels": {
+        "kk": "Картон ыдыс",
+        "ru": "Картонная тара",
+        "en": "Cardboard packaging"
+      },
+      "category": "Қайталама шикізат",
+      "unit": "kg",
+      "recyclability": "yes",
+      "recyclable": true,
+      "disposalDefault": "Қайта өңдеуге тапсыру",
+      "co2Tbo": 1164.39,
+      "co2Recommended": 6.41,
+      "co2Saving": 1157.98,
+      "co2": 1.15798,
+      "note": {
+        "kk": "Құрғақ және таза картон",
+        "ru": "Сухой и чистый картон",
+        "en": "Dry and clean cardboard"
+      },
+      "active": true
+    },
+    {
+      "id": "pet-bottle",
+      "name": "ПЭТ-бөтелке 1,0 л",
+      "labels": {
+        "kk": "ПЭТ-бөтелке 1,0 л",
+        "ru": "ПЭТ-бутылка 1,0 л (растительное масло)",
+        "en": "1.0 L PET bottle (vegetable oil)"
+      },
+      "category": "Қайталама шикізат",
+      "unit": "kg",
+      "recyclability": "partial",
+      "recyclable": false,
+      "disposalDefault": "Қайта өңдеуге тапсыру",
+      "co2Tbo": 8.88,
+      "co2Recommended": 6.41,
+      "co2Saving": 2.47,
+      "co2": 0.0024700000000000004,
+      "note": {
+        "kk": "Шыны коэффициенттері қолданылған; май бөтелкесін барлық жерде қабылдамайды",
+        "ru": "Допущение: коэффициенты как у стекла. Бутылки из-под масла принимают не везде",
+        "en": "Assumption: glass factors are used. Used oil bottles are not accepted everywhere"
+      },
+      "active": true
+    },
+    {
+      "id": "glass-bottle",
+      "name": "Шыны бөтелке",
+      "labels": {
+        "kk": "Шыны бөтелке",
+        "ru": "Стеклобутылка",
+        "en": "Glass bottle"
+      },
+      "category": "Қайталама шикізат",
+      "unit": "kg",
+      "recyclability": "yes",
+      "recyclable": true,
+      "disposalDefault": "Қайта өңдеуге тапсыру",
+      "co2Tbo": 8.88,
+      "co2Recommended": 6.41,
+      "co2Saving": 2.47,
+      "co2": 0.0024700000000000004,
+      "note": {
+        "kk": "",
+        "ru": "",
+        "en": ""
+      },
+      "active": true
+    },
+    {
+      "id": "aluminium",
+      "name": "Алюминий банкалар",
+      "labels": {
+        "kk": "Алюминий банкалар",
+        "ru": "Алюминиевые банки",
+        "en": "Aluminium cans"
+      },
+      "category": "Қайталама шикізат",
+      "unit": "kg",
+      "recyclability": "yes",
+      "recyclable": true,
+      "disposalDefault": "Қайта өңдеуге тапсыру",
+      "co2Tbo": 8.88,
+      "co2Recommended": 6.41,
+      "co2Saving": 2.47,
+      "co2": 0.0024700000000000004,
+      "note": {
+        "kk": "Шыны коэффициенттері қолданылған",
+        "ru": "Допущение: коэффициенты как у стекла",
+        "en": "Assumption: glass factors are used"
+      },
+      "active": true
+    },
+    {
+      "id": "packaging",
+      "name": "Орама қалдықтары",
+      "labels": {
+        "kk": "Орама қалдықтары",
+        "ru": "Упаковочные отходы",
+        "en": "Packaging waste"
+      },
+      "category": "Аралас",
+      "unit": "kg",
+      "recyclability": "partial",
+      "recyclable": false,
+      "disposalDefault": "Қайта өңдеуге тапсыру",
+      "co2Tbo": 1164.39,
+      "co2Recommended": 6.41,
+      "co2Saving": 1157.98,
+      "co2": 1.15798,
+      "note": {
+        "kk": "Картон және ПЭТ қайта өңдеуге, қалғаны ҚТҚ-ға; картон коэффициенті қолданылған",
+        "ru": "Допущение: считать как картон. Уточнить состав упаковки",
+        "en": "Assumption: treated as cardboard. Confirm the packaging composition"
+      },
+      "active": true
+    }
+  ],
+  "members": [
+    {
+      "id": "U-1",
+      "name": "Жауапты тұлға",
+      "email": "user@atu.kz",
+      "role": "User",
+      "org": "1, 2-корпустар асхана кешені (ЖК «Искандер»)",
+      "active": true,
+      "passwordHash": "6a79a86f109d2d5c132999830b9745cb:ab6e902310eff2ded58addc9bd15c23dd81514e1198320a72f23f2af58b5b5573329422227d8cf42b1b85df03cd52342c52514ee67a7b6dc7dd5bd84d9d230d1"
+    },
+    {
+      "id": "U-2",
+      "name": "Тексеруші",
+      "email": "reviewer@atu.kz",
+      "role": "Reviewer",
+      "org": "ATU",
+      "active": true,
+      "passwordHash": "6c034e1d1017c0274d01b20778e48f5e:378e62eeb4cf348e56bcff00d918670b4ad336f85e1bdb429c7869c3f4bac8c508f6de7c5832e1e52f4efc4795d214233f8e0aa1f903d43572875f6a75135a75"
+    },
+    {
+      "id": "U-3",
+      "name": "Әкімші",
+      "email": "admin@atu.kz",
+      "role": "Administrator",
+      "org": "ATU",
+      "active": true,
+      "passwordHash": "d978ffab78a19e04239798aee87c4eb8:8eb5707fd38685d0c1a6835c2733a1197cf4bd398b8f36c0935428bbdd1e22d166a0c8befeeee04638a8cdc4df713530f8e21c1408ed576a2baa1069631ec677"
+    },
+    {
+      "id": "U-4",
+      "name": "Басшылық",
+      "email": "leadership@atu.kz",
+      "role": "Leadership",
+      "org": "ATU",
+      "active": true,
+      "passwordHash": "fce4581f04bce5b9d63013c88f9c4444:2a99874e1edaa70a55133dcdcbf488610a0a28c15a342944305311bc74d446a5028329c462f5796497047516e2d0680c131539e2f67ace4e5c9d71ac448b3d2b"
+    }
+  ],
+  "reminderKeys": [
+    "2026-11:BC",
+    "2026-11:CP",
+    "2026-11:INN",
+    "2026-11:FTD"
+  ],
+  "reminderRuns": {
+    "2026-11": {
+      "time": "2026-11-10T11:52:04.707Z",
+      "created": 4
+    }
+  },
+  "demoDatasetVersion": 5,
+  "schemaVersion": 5,
+  "disposalMethods": [
+    "Сатылмаған өнімді беру",
+    "Жануарларға жемге беру",
+    "Қайта өңдеуге тапсыру",
+    "Пайдаланылған майды арнайы ұйымға тапсыру",
+    "Анаэробты ашыту (биогаз)",
+    "Компосттау",
+    "ҚТҚ полигонына шығару"
+  ],
+  "disposalCatalog": [
+    {
+      "code": "DONATE",
+      "name": "Сатылмаған өнімді беру",
+      "labels": {
+        "kk": "Сатылмаған өнімді беру (фудшеринг, қайырымдылық)",
+        "ru": "Передача нереализованной продукции (фудшеринг, благотворительность)",
+        "en": "Donate unsold products (food sharing, charity)"
+      },
+      "forWaste": {
+        "kk": "Сатылмаған өнім қалдықтары",
+        "ru": "Остатки нереализованной продукции",
+        "en": "Unsold food products"
+      },
+      "co2Factor": 0,
+      "hierarchy": 1,
+      "note": {
+        "kk": "Қалдық пайда болмайды. Тек қауіпсіз және жарамдылық мерзімі өтпеген өнім.",
+        "ru": "Отход не возникает. Только безопасная продукция с неистёкшим сроком годности",
+        "en": "No waste is generated. Only safe products within their shelf life."
+      }
+    },
+    {
+      "code": "FEED",
+      "name": "Жануарларға жемге беру",
+      "labels": {
+        "kk": "Жануарларға жемге беру",
+        "ru": "Передача на корм животным",
+        "en": "Use as animal feed"
+      },
+      "forWaste": {
+        "kk": "Көкөніс қабықтары, нан, жеміс қалдықтары",
+        "ru": "Очистки овощей, хлеб, отходы фруктов",
+        "en": "Vegetable peelings, bread and fruit waste"
+      },
+      "co2Factor": null,
+      "hierarchy": 2,
+      "note": {
+        "kk": "DEFRA коэффициенті жоқ. Шарт және ветеринариялық-санитариялық талаптар қажет.",
+        "ru": "Нет коэффициента DEFRA. Нужны договор и соблюдение ветеринарно-санитарных требований",
+        "en": "No DEFRA factor. A contract and veterinary and sanitary compliance are required."
+      }
+    },
+    {
+      "code": "RECYCLE",
+      "name": "Қайта өңдеуге тапсыру",
+      "labels": {
+        "kk": "Қайталама шикізатты қайта өңдеуге тапсыру",
+        "ru": "Сдача вторсырья на переработку",
+        "en": "Send recyclables for recycling"
+      },
+      "forWaste": {
+        "kk": "Картон, ПЭТ, шыны, алюминий",
+        "ru": "Картон, ПЭТ, стекло, алюминий",
+        "en": "Cardboard, PET, glass and aluminium"
+      },
+      "co2Factor": 6.41,
+      "hierarchy": 3,
+      "note": {
+        "kk": "Тек тасымалдау және қайта өңдеу (DEFRA әдістемесі).",
+        "ru": "Только транспорт и переработка (методика DEFRA)",
+        "en": "Transport and recycling only (DEFRA method)."
+      }
+    },
+    {
+      "code": "OIL",
+      "name": "Пайдаланылған майды арнайы ұйымға тапсыру",
+      "labels": {
+        "kk": "Пайдаланылған майды арнайы ұйымға тапсыру",
+        "ru": "Сдача отработанного масла спецорганизации",
+        "en": "Send used oil to a specialist operator"
+      },
+      "forWaste": {
+        "kk": "Пайдаланылған фритюр майы",
+        "ru": "Отработанное фритюрное масло",
+        "en": "Used frying oil"
+      },
+      "co2Factor": 6.41,
+      "hierarchy": 3,
+      "note": {
+        "kk": "Қайта өңдеуге тең деп қабылданған. Май биодизельге жіберіледі.",
+        "ru": "Допущение: как переработка. Масло идёт на биодизель",
+        "en": "Assumed equivalent to recycling. Oil is used for biodiesel."
+      }
+    },
+    {
+      "code": "AD",
+      "name": "Анаэробты ашыту (биогаз)",
+      "labels": {
+        "kk": "Анаэробты ашыту (биогаз)",
+        "ru": "Анаэробное сбраживание (биогаз)",
+        "en": "Anaerobic digestion (biogas)"
+      },
+      "forWaste": {
+        "kk": "Барлық органикалық қалдық, оның ішінде ет пен сүйек",
+        "ru": "Все органические, включая мясо и кости",
+        "en": "All organics, including meat and bones"
+      },
+      "co2Factor": 8.88,
+      "hierarchy": 4,
+      "note": {
+        "kk": "DEFRA 2024: тамақ қалдықтарын анаэробты ашыту.",
+        "ru": "DEFRA 2024: пищевые отходы, анаэробное сбраживание",
+        "en": "DEFRA 2024: food waste, anaerobic digestion."
+      }
+    },
+    {
+      "code": "COMPOST",
+      "name": "Компосттау",
+      "labels": {
+        "kk": "Компосттау",
+        "ru": "Компостирование",
+        "en": "Composting"
+      },
+      "forWaste": {
+        "kk": "Көкөніс, жеміс, қабық, кофе сығындысы, нан",
+        "ru": "Овощи, фрукты, скорлупа, кофейный жмых, хлеб",
+        "en": "Vegetables, fruit, shells, coffee grounds and bread"
+      },
+      "co2Factor": 8.88,
+      "hierarchy": 4,
+      "note": {
+        "kk": "DEFRA 2024: тамақ қалдықтарын компосттау.",
+        "ru": "DEFRA 2024: пищевые отходы, компостирование",
+        "en": "DEFRA 2024: food waste, composting."
+      }
+    },
+    {
+      "code": "TBO",
+      "name": "ҚТҚ полигонына шығару",
+      "labels": {
+        "kk": "ҚТҚ полигонына шығару (көму)",
+        "ru": "Вывоз ТБО на полигон (захоронение)",
+        "en": "Send municipal waste to landfill"
+      },
+      "forWaste": {
+        "kk": "Барлық қалдық; үлгілердегі әдепкі тәсіл",
+        "ru": "Любые; сейчас способ по умолчанию в образцах",
+        "en": "Any waste; current default in sample forms"
+      },
+      "co2Factor": null,
+      "hierarchy": 5,
+      "note": {
+        "kk": "Коэффициент түрге байланысты: тамақ 700,21; картон 1 164,39; шыны 8,88.",
+        "ru": "Коэффициент зависит от вида: пищевые 700,21; картон 1 164,39; стекло 8,88",
+        "en": "Factor depends on type: food 700.21; cardboard 1,164.39; glass 8.88."
+      }
     }
   ]
 }

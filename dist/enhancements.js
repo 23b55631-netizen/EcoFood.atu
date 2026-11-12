@@ -11,7 +11,7 @@ const translations = [
 ['QR identifies the location and source.','QR жинау орны мен көзін анықтайды.','QR определяет место и источник сбора.'],['A structured form records weight and evidence.','Нысанда салмақ пен дәлелдер тіркеледі.','В форме фиксируются вес и подтверждения.'],['Responsible staff verify and update status.','Жауапты қызметкер деректерді тексеріп, мәртебесін жаңартады.','Ответственный проверяет данные и обновляет статус.'],['Reports and ESG indicators support decisions.','Есептер мен ESG көрсеткіштері шешім қабылдауға көмектеседі.','Отчеты и показатели ESG помогают принимать решения.'],
 ['All values in this MVP are illustrative demo estimates, clearly separated from verified university performance. Production calculations require approved emission factors, measured baselines and auditable source data.','Көрсеткіштер — үлгілік есептеулер. Нақты нәтиже үшін бекітілген коэффициенттер, бастапқы өлшемдер және тексерілетін деректер қажет.','Показатели являются демонстрационными оценками. Для реальных расчетов нужны утвержденные коэффициенты, исходные измерения и проверяемые данные.'],
 ['Formula preview: diverted waste × category emission factor. No claim of audited impact is made.','Есептеу үлгісі: қайта бағытталған қалдық × санат коэффициенті. Бұл аудиттен өткен нәтиже емес.','Пример расчета: перенаправленные отходы × коэффициент категории. Результат не проходил аудит.'],
-['Downloads the currently visible demo registry in an Excel-compatible .xls file.','Тізілімді Excel бағдарламасында ашылатын файлға жүктеу.','Загрузка реестра в файл, совместимый с Excel.'],['Opens a print-ready view; choose “Save as PDF” in your browser.','Басып шығару терезесінде «PDF ретінде сақтау» таңдаңыз.','В окне печати выберите «Сохранить как PDF».'],
+['Downloads the currently visible registry as a real .xlsx workbook.','Көрсетілген тізілімді нақты .xlsx файлына жүктейді.','Скачивает показанный реестр в настоящий файл .xlsx.'],['Downloads a ready PDF report with Kazakh, Russian and English text support.','Қазақ, орыс және ағылшын мәтінін қолдайтын дайын PDF есебін жүктейді.','Скачивает готовый PDF-отчёт с поддержкой казахского, русского и английского текста.'],
 ['Main Canteen submitted 48 kg','Негізгі асхана 48 кг тіркеді','Главная столовая зарегистрировала 48 кг'],['Record added to the consolidated registry','Жазба бірыңғай тізілімге енгізілді','Запись добавлена в единый реестр'],['Reviewer requested a clearer photo','Тексеруші анық фотосурет сұрады','Проверяющий запросил более четкое фото'],['Dormitory #2 manager role','№2 жатақхана менеджері','Менеджер общежития №2'],
 ['EF-2041 needs review','EF-2041 тексеруді күтуде','EF-2041 ожидает проверки'],['EF-2040 approved','EF-2040 қабылданды','EF-2040 принят'],['EF-2039 returned','EF-2039 қайтарылды','EF-2039 возвращен'],['New member invited','Жаңа қатысушы шақырылды','Приглашен новый участник'],
 ['Main Canteen','Негізгі асхана','Главная столовая'],['Dormitory #1','№1 жатақхана','Общежитие №1'],['Dormitory #2','№2 жатақхана','Общежитие №2'],['Training Restaurant','Оқу мейрамханасы','Учебный ресторан'],['Laboratory Block','Зертхана корпусы','Лабораторный корпус'],['Central Warehouse','Орталық қойма','Центральный склад'],
@@ -46,7 +46,7 @@ render=function(){
   if(mobileNav){const menu=document.createElement('details');menu.className='module-menu';menu.innerHTML=`<summary>${state.lang==='kk'?'Барлық бөлімдер':state.lang==='ru'?'Все разделы':'All sections'}</summary><div>${navItems()}</div>`;document.querySelector('.content').prepend(menu);menu.querySelectorAll('[data-page]').forEach(button=>button.onclick=()=>{state.page=button.dataset.page;render()});}
   document.querySelectorAll('[data-lang]').forEach(button=>button.onclick=()=>{
     const fields=Array.from(document.querySelectorAll('input,select,textarea')).filter(control=>control.type!=='file').map(control=>({key:control.name||control.id,value:control.value}));
-    state.lang=button.dataset.lang;render();
+    state.lang=button.dataset.lang;localStorage.setItem('ecofood-language',state.lang);render();
     fields.forEach(field=>{const control=Array.from(document.querySelectorAll('input,select,textarea')).find(item=>(item.name||item.id)===field.key);if(control)control.value=field.value;});
   });
   document.querySelectorAll('[data-action="return"],[data-action="approve"]').forEach(button=>button.onclick=()=>{
@@ -67,4 +67,4 @@ render=function(){
   const role=document.getElementById('roleSelect');if(role)role.onchange=()=>{state.role=role.value;render();};
   localizePage();
 };
-render();
+localizePage();
