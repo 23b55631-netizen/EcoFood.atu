@@ -24,6 +24,9 @@ test('demo account label and published asset versions are current',()=>{
   assert.doesNotMatch(platform,/operator@atu\.kz/);
   assert.match(index,/catalog-data\.js\?v=1/);
   assert.match(index,/pages-adapter\.js\?v=12/);
-  assert.match(index,/platform\.js\?v=21/);
-  assert.match(index,/product-upgrades\.js\?v=24/);
+  assert.match(index,/platform\.js\?v=22/);
+  assert.match(index,/product-upgrades\.js\?v=25/);
+  assert.match(upgrades,/chooseOrg:'Есеп енгізілетін ұйымды таңдаңыз'/);
+  assert.match(upgrades,/orgLocked:'Ұйым тіркелгіңізге бекітілген'/);
+  assert.match(platform,/\['Operator','User','Administrator'\]/);
 });
